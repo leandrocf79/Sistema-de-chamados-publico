@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*:focus{
+    outline: 0;
+}
+
+/*passar altura padrão do projeto: */
+html, body, #root{
+	height: 100%;
+}
+
+
+/*Pesquise "roboto" no google e veja fontes.
+https://fonts.google.com/specimen/Roboto
+
+Select a opção que desejar e clique em @import
+Copiar o conteúso SEM o <style> e colar no iniício deste css
+para poder importar ele aqui
+*/
+body{
+    font: 14px 'Roboto', sans-serif;
+    background-color: #d3d0d0;
+}
+
+a{
+    text-decoration: none; /*Tirar aquelas ancoras de sublinhado  */
+}
+
+ul{
+    list-style: none; /* Tirar a bolinha de listas não ordenadas   */
+}
+
+button{
+    cursor: pointer; /*Aparecer o cursor de mão sobre os botões   */
+}

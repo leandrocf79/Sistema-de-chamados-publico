@@ -1,0 +1,25 @@
+form textarea{
+    height: 120px;
+    resize: none;
+}
+
+form input[type=radio]{
+    margin: 5px 0 15px 0;
+}
+
+/*Vai espaçar todos à E menos o primeiro */
+form input[type=radio]:not(:first-child){
+    margin-left: 30px;
+}
+
+.status span{
+    padding-left: .1em;
+    font-size: 1.2em;
+}
+
+.form-profile label:not(:first-child){
+    margin-top: 20px;
+}
+
+
+

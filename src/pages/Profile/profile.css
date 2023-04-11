@@ -1,0 +1,84 @@
+.container{
+    display: flex;
+    background-color: #a8abaf;
+    border-radius: 5px;
+    padding: .8em;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.label-avatar{
+    width: 280px;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer
+    /*para saber o tamanho durante esta edição:
+    background-color: #121212;
+    */
+}
+
+.label-avatar input{
+    display: none; /*Para tirar o botão enviar */    
+}
+
+.label-avatar span{
+    /*Deixar sobreposto*/
+    z-index: 99;
+
+    position: absolute; /*aqui vai arrastar para sobrepor*/
+    /*background-color: #121212;*/ 
+    opacity: 0.7;
+    transition: all .5s;
+
+
+}
+
+.label-avatar span:hover{
+    opacity: 1;
+    transform: scale(1.5);
+}
+
+.form-profile img{
+    margin-bottom: 1em;
+    border-radius: 50%; /* para arredondar a imagem */
+    object-fit: cover; /* PARA NÃO DESTORCER */
+}
+
+.form-profile label{
+    margin-bottom: .5em;
+    font-size: 1.4em;
+}
+
+.form-profile input, textarea, select{
+    margin-bottom: 1em;
+    padding: .5em;
+    border: 0;
+    border-radius: 5px;
+    max-width: 600px;
+}
+
+.form-profile input:disabled{
+    cursor: not-allowed; /* vai aparecer o cursor de PROIBIDO onde não pode editar */
+}
+
+/*
+.form-profile button{
+    max-width: 600px;
+} Não vai precisar, definido menor em outro lugar*/
+
+.logout-btn{
+    padding: 5px 20px;
+    background-color: transparent;
+    border: 1px solid #121212;
+    border-radius: 8px;
+    font-size: 1.2em;
+
+    /*alinhar dentro do botão*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}

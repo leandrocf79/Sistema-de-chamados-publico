@@ -1,0 +1,89 @@
+.container-center{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #121212;
+    
+}
+
+.login{
+    background: rgb(204, 204, 107) ;
+    width: 550px;        
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 20px;
+}
+
+.login-area{
+    display: flex;
+    justify-content: center;
+    background-color: #181c2e;
+    width: 100%;
+    }
+
+.logo-area div{
+    background-color: #fffde4; 
+    height: 175px;
+    border-radius: 20px 20px 0 0; 
+    width: 550px;
+}
+
+.logo-area img{
+    padding: 20px;  
+    margin: 0 140px 0 140px;    
+}
+
+
+form{
+    margin-top: 1.5em;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+}
+
+form h1{
+    text-align: center;
+    margin-bottom: 0.5em;
+    color:  #181c2e;
+}
+
+.login input{
+    margin-bottom: 15px;
+    height: 30px;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 15px;
+    background-color: #fff;
+}
+
+form button{
+    height: 30px;
+    border: 0;
+    border-radius: 8px;
+    background-color: #181c2e;
+    color: #fff;
+    font-size: 1.3em;
+    width: 140px;
+    margin-left: 30%; 
+}
+
+form button:hover{
+    background-color: #393f5c;
+    color: #e9e3e3;
+}
+
+form button:active{
+    background-color: #b1adad;
+    color: #272d47;
+}
+
+.login a {
+    margin: 1.5em 0;
+    color: #121212;
+    cursor: pointer;
+}

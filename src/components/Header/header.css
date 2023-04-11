@@ -1,0 +1,110 @@
+.sidebar{
+    margin: 0;
+    padding: 0;
+    width: 200px; 
+    background-color: #181c2e;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+
+}
+
+.sidebar div{
+    background: url('../../assets/cover.jpg');
+    background-color: #181c2e;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 150px;   
+
+}
+
+.sidebar div{
+    padding-top: 25px;    
+}
+
+
+.sidebar div img {
+    border-radius: 50%;
+    margin-left: 48px; /*original era margin: auto; o problema é que estava trazendo avatar para E*/
+    width: 100px;
+    height: 100px;
+    -webkit-filter: drop-shadow(2px 3px 6px #121212);
+    filter: drop-shadow(2px 3px 6px #121212);/*borda suave*/
+    object-fit: cover;
+    ;
+
+}
+
+.sidebar a{
+    display: block; /*alinha na vertical*/
+    color: rgba(255,255,255, 0.7);
+    padding: 16px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;/*alinha centro na vertical*/
+    transition: ease-in-out .4s;
+}
+
+.sidebar a svg{
+    margin-right: .5em;
+}
+
+.sidebar a:hover{
+    background-color: #121212;
+    color: #fff;
+
+}
+
+/* Ajustes de profile */
+.content{
+    margin-left: 200px;
+    padding: 1px 16px;
+}
+
+/* FIM ajustes de profile */
+
+
+@media screen and (max-width: 700px){ /*Quando a largura máxima for 700px será aplicado o que tem aqui dentro*/
+    .sidebar{
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+
+    .sidebar a{
+        float: left; /*icones vão ficar da E para a D */
+    }
+
+    .sidebar div{
+        display: none;/* Em aparelhos pequenos vai desaparecer o menu lateral quando melhor que 700px */
+    }
+    .sidebar a svg{
+        display: none;/* Quando melhor que 700px os icones vao desaparecer*/
+    }
+
+
+    /* Ajustes de profile */
+    div.content{
+        margin-left: 0px;
+        padding: 1px 16px;
+    }
+
+/* FIM ajustes de profile */
+
+}
+
+
+/* Em aparelhos pequenos vai desaparecer os ICONES quando melhor que 400px*/
+@media screen and (max-width:400px){
+    .sidebar a{
+        text-align: center;
+        float: none;
+        display: none;
+    }
+    .sidebar a svg{
+        display: none; /*Quando melhor que 400px os icones vao desaparecer*/
+    }
+}
