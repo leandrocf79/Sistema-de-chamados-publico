@@ -1,0 +1,5311 @@
+
+npm install firebase
+npm install react-router-dom
+npm install react-router-dom@5.x   // Essa versão para usar Switch
+npm install react-toastify
+npm install react-icons
+npm install date-fns     //Para formatar data instalar date-fns no terminal. Veja a documentação em https://date-fns.org/
+
+
+
+
+Deixar somente Apps.js e index.js com o padrão e zerar o src/index.css:
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*:focus{
+    outline: 0;
+}
+
+/*passar altura padrão do projeto: */
+html, body, #root{
+	height: 100%;
+}
+
+
+
+
+--------------------------------------------Importante deixar nesse formato, no padrão deu erro no final duplicando o resultado de busca
+src/
+---------Importar o index.css em index.js: 
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import App from './App';
+import './index.css';
+
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
+
+
+
+
+---------Atualizar o index.css para este projeto, isso também 
+pode se aplicar a outros projetos, ficou muito bom assim como configuração inicial:
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*:focus{
+    outline: 0;
+}
+
+/*passar altura padrão do projeto: */
+html, body, #root{
+	height: 100%;
+}
+
+
+/*Pesquise "roboto" no google e veja fontes.
+https://fonts.google.com/specimen/Roboto
+
+Select a opção que desejar e clique em @import
+Copiar o conteúso SEM o <style> e colar no iniício deste css
+para poder importar ele aqui
+*/
+body{
+    font: 14px 'Roboto', sans-serif;
+    background-color: #efefef;
+}
+
+a{
+    text-decoration: none; /*Tirar aquelas ancoras de sublinhado  */
+}
+
+ul{
+    list-style: none; /* Tirar a bolinha de listas não ordenadas   */
+}
+
+button{
+    cursor: pointer; /*Aparecer o cursor de mão sobre os botões   */
+}
+
+
+
+
+
+-----------------------------
+-----------------------------
+Criar projeto novo no FIREBASE, aqui será "sistema"
+
+Ativar o Google Analytics neste projeto
+
+Selecionar user e criar.
+
+No icone WEB </> criar uma chave, pode ser o mesmo nome "sistema"
+Não precisa marcar a opção: Configure também o Firebase Hosting
+
+e registarr app
+
+Copiar a chave do DB e colar em src/services/firebaseConnection.js:
+((   Aqui está modificado, veja no DB os valores reais   ))
+
+
+
+
+/*  VERSÃO 8 do firebase
+import firebase from "firebase/app";
+import "firebase/auth";  
+import "firebase/firestore";
+*/
+
+// VERSÃO 9 compatível do firebase. Depois é interessante corrigir todo o código para versão MODULAR
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+
+
+
+const firebaseConfig = {
+      apiKey: "AIzaSfsdfsdfhdSbj6f7WAsdfsdfdf",
+      authDomain: "sistema-yy56y65y.firebaseapp.com",
+      projectId: "sistema-y65y56y7",
+      storageBucket: "sistema-u67u67u6.appspot.com",
+      messagingSenderId: "5u676kikuik,u,u",
+      appId: "1:5ui,ui,ui,yu,kty,tryujyjyujyujyujyujyujyu15",
+      measurementId: "G-syujyujyujyu"
+    };
+    
+
+  // Initialize Firebase com verificação
+
+  if(!firebase.apps.length){
+    firebase.initializeApp(firebaseConfig);
+  }
+ 
+  export default firebase;
+
+
+
+
+
+---------------------------
+Agora vá em firebase em Authentication/Email e senha
+
+Em  Firestore Database / Cloud FireStore 
+***Neste momento deixar em Teste MOde para que todos possam usar sem estar logado.
+
+Selecionar: southamerica-east1 (São Paulo)
+
+Agora vá em Rules e altere a data de expiração:
+ allow read, write: if
+          request.time < timestamp.date(2033, 3, 18);
+    }
+
+--------------
+No terminal do projeto:
+
+Ctrl+c para sair localhost e instalar o DB
+
+ npm install firebase
+
+npm start
+
+-------------
+Verificar se db está funcionando.
+Vá em App.js e import:
+
+import firebase from './services/firebaseConnection';
+
+function App() {
+
+  return (
+    <div>
+      teste
+    </div>
+  
+  );
+}
+
+export default App;
+
+
+
+------------------Criar em src/pages/SignIn/index.js:
+function SignIn() {
+
+    return (
+      <div>
+        Teste SignIn. Página de login
+      </div>
+    
+    );
+  }
+  
+  export default SignIn;
+
+
+
+------------------Criar em src/pages/SignUp/index.js:
+
+function SignUp() {
+
+    return (
+      <div>
+        Teste SignUp. Cadastro
+      </div>
+    
+    );
+  }
+  
+  export default SignUp;
+
+
+
+-------------------
+-----------No terminal Ctrl+c
+Instalar:
+npm install react-router-dom
+
+
+
+-----------Criar src/routes/index.js:
+
+
+// Switch - um componente por página
+import { Switch } from 'react-router-dom';
+import Route from './Route';
+
+import SignIn from '../pages/SignIn';
+import SignUp from '../pages/SignUp';
+
+export default function Routes(){
+    return(
+        <switch>
+
+        </switch>
+    )
+}
+
+
+
+
+
+
+-----------Criar src/routes/Route.js:
+
+
+// Redirect - para enviar o usuário para uma página específica
+import {Route, Redirect} from 'react-router-dom';
+
+// isPrivate - para saber se a rota é privada ou não
+// usando o sprad operator(...) vai passar todo o resto aqui
+
+export default function RouteWrapper({
+    component: Component,
+    isPrivate,
+    ...rest
+}){
+    
+    //simular aqui 2 variáveis para testar login:
+    const loading = false;
+    const signed = false;
+    
+
+    //Condicionais de verificação de login
+    if(loading){
+        return(
+            <div></div>
+        )        
+    }
+
+    //Se não está logado e rota que está tentando acessar for privada será direcionado para login
+    if( !signed && isPrivate){
+        return <Redirect to='/' />
+    }
+
+    //Logado e acessa página não privada
+    if( signed && !isPrivate){
+        return <Redirect to='/dashboard' />
+    }
+    
+    
+    return(
+        <Route
+            {...rest}
+            render={props => (
+                <Component{...props} />
+                )} //Para retornar o componente com todas as propriedades
+        />
+    )
+}
+
+
+
+
+-------------------Atualizar rotas. src/routes/index.js:
+
+
+// Switch - um componente por página
+import { Switch } from 'react-router-dom';
+import Route from './Route';
+
+import SignIn from '../pages/SignIn';
+import SignUp from '../pages/SignUp';
+
+export default function Routes(){
+    return(
+        <Switch>
+            <Route exact path='/' component={SignIn} />
+            <Route exact path='/register' component={SignUp} />
+
+        </Switch>
+    )
+}
+
+
+
+
+
+-------------------Atualizar src/App.js:
+
+
+
+import { BrowserRouter } from "react-router-dom";
+import Routes from "./routes";
+
+function App() {
+
+  return (
+   <BrowserRouter>
+       <Routes/>
+   
+   </BrowserRouter>
+  
+  );
+}
+
+export default App;
+
+
+-----
+Teste isso:
+
+http://localhost:3000/register
+
+
+
+
+------------------Criar em src/pages/Dashboard/index.js:
+
+ 
+export default function Dashboard(){
+    return(
+        <div>
+            Página DASHBOARD, só quem estiver logado poderá acessar.
+        </div>
+    )
+}
+
+
+
+-------------------Atualizar rotas. src/routes/index.js:
+
+// Switch - um componente por página
+import { Switch } from 'react-router-dom';
+import Route from './Route';
+
+import SignIn from '../pages/SignIn';
+import SignUp from '../pages/SignUp';
+
+import Dashboard from '../pages/Dashboard';
+
+export default function Routes(){
+    return(
+        <Switch>
+            <Route exact path='/' component={SignIn} />
+            <Route exact path='/register' component={SignUp} />
+            <Route exact path='/dashboard' component={Dashboard}   isPrivate   />
+
+        </Switch>
+    )
+}
+
+
+
+Testar COM e SEM isPrivete
+e depois troque para TRUE em Route.js 
+const signed = false; 
+http://localhost:3000/dashboard
+
+
+------------------------------------------------
+------------------------------------------------
+Editar SignIn. Criar signin.css e imporar em index.js para ver as mudanças(import './signin.css';)
+Criar tb um diretório para imagens, src/assets.
+
+
+
+pages/SignIn/index.js:
+
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './signin.css';
+import logo from '../../assets/logoJPG.jpg';
+
+function SignIn() {
+  const [email, setEmail] =useState('');
+  const [password, setPassword] =useState('');
+
+
+  async function handleSubmit(e){
+    e.preventDefault(); //Para não atualizar a página
+    //alert('teste handleSubmit')
+  }
+
+    return (
+      <div className='container-center'>
+        <div className='login'>
+          <div className='logo-area'>
+            <div> 
+            <img src={logo} alt='Logo marca' />
+            </div>
+          </div>
+          
+
+            <form onSubmit={handleSubmit}>
+              <h1>Entrar</h1>
+              <input type="text" placeholder='E-mail' value={email} onChange={(e)=> setEmail(e.target.value) }/>
+              <input type="text" placeholder='************'value={password} onChange={(e)=> setPassword(e.target.value) }/>
+              <button type='submit'>Entrar</button>
+            </form>
+            <Link to='/register'>Criar uma conta.</Link>
+
+        </div>        
+      </div>
+    
+    );
+  }
+  
+  export default SignIn;
+
+
+
+-----------------------------------
+
+pages/SignIn/signin.CSS:
+
+
+.container-center{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #121212;
+}
+
+.login{
+    background: rgb(204, 204, 107) ;
+    width: 550px;        
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 20px;
+}
+
+.login-area{
+    display: flex;
+    justify-content: center;
+    background-color: #181c2e;
+    width: 100%;
+    }
+
+.logo-area div{
+    background-color: #fffde4; 
+    height: 175px;
+    border-radius: 20px 20px 0 0; 
+    width: 550px;
+}
+
+.logo-area img{
+    padding: 20px;  
+    margin: 0 140px 0 140px;    
+}
+
+
+form{
+    margin-top: 1.5em;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+}
+
+form h1{
+    text-align: center;
+    margin-bottom: 0.5em;
+    color:  #181c2e;
+}
+
+.login input{
+    margin-bottom: 15px;
+    height: 30px;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 15px;
+    background-color: #fff;
+}
+
+form button{
+    height: 30px;
+    border: 0;
+    border-radius: 8px;
+    background-color: #181c2e;
+    color: #fff;
+    font-size: 1.3em;
+    width: 100px;
+    margin-left: 35%; 
+}
+
+form button:hover{
+    background-color: #393f5c;
+    color: #e9e3e3;
+}
+
+form button:active{
+    background-color: #b1adad;
+    color: #272d47;
+}
+
+.login a {
+    margin: 1.5em 0;
+    color: #121212;
+    cursor: pointer;
+}
+
+
+
+-----------------------------------------
+Atualizar SignUp. É basicamente a mesma coisa de SignIn:
+
+
+
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
+import logo from '../../assets/logoJPG.jpg';
+
+function SignUp() {
+  const [nome, setNome] =useState('');
+
+  const [email, setEmail] =useState('');
+  const [password, setPassword] =useState('');
+
+  
+
+
+  async function handleSubmit(e){
+    e.preventDefault(); //Para não atualizar a página
+    //alert('teste handleSubmit')
+  }
+
+    return (
+      <div className='container-center'>
+        <div className='login'>
+          <div className='logo-area'>
+            <div> 
+            <img src={logo} alt='Logo marca' />
+            </div>
+          </div>
+          
+
+            <form onSubmit={handleSubmit}>
+              <h1>Cadastro</h1>
+
+              <input type="text" placeholder='Digite seu nome' value={nome} onChange={(e)=> setNome(e.target.value) }/>
+
+
+              <input type="text" placeholder='E-mail' value={email} onChange={(e)=> setEmail(e.target.value) }/>
+              <input type="text" placeholder='************'value={password} onChange={(e)=> setPassword(e.target.value) }/>
+              <button type='submit'>Cadastrar</button>
+            </form>
+
+
+            <Link to='/'>Já possui uma conta? Entrar.</Link>
+
+
+        </div>        
+      </div>
+    
+    );
+  }
+  
+  export default SignUp;
+
+  //http://localhost:3000/register
+
+
+
+
+------------------------------------
+
+CONTEXTAPI para cadastro de usuario.
+
+Criar em src/contexts/auth.js para autenticação:
+
+
+
+
+
+import { useState, useEffect, createContext} from 'react';
+import firebase from '../services/firebaseConnection';
+
+export const AuthContext = createContext({});
+
+//prover
+function AuthProvider({ children }){
+
+    const [user, setUser] = useState(null);  //Inicia como logout
+    const [loadingAuth, setLoadingAuth] = useState(false); // após login mudar para true lá na função
+    //const [loading, setLoading] = useState(true); // iniciar carregando
+
+//signed é um boolean para saber se está logado ou não.
+// signed: !!user    isso converte para boolean
+    return(
+        <AuthContext.Provider value={{signed: !!user, user}}>
+            {children}
+        </AuthContext.Provider>
+    )
+}
+
+export default AuthProvider;
+
+
+
+
+
+---------------Atualizar App.js, vai apresentar um erro, mas precisa corrigir rotas depois:
+
+
+import { BrowserRouter } from "react-router-dom";
+
+import AuthProvider from "./contexts/auth"; //Agora terá acesso aos dados do usuário em todos os lugares
+
+import Routes from "./routes";
+
+function App() {
+
+  return (
+    <AuthProvider>    
+        <BrowserRouter>
+            <Routes/>
+        
+        </BrowserRouter>
+   </AuthProvider>
+  
+  );
+}
+
+export default App;
+
+
+
+
+------------------Corrigir ROTAS, em Route.js:
+
+
+
+import { useContext } from 'react';
+
+// Redirect - para enviar o usuário para uma página específica
+import { Route, Redirect } from 'react-router-dom';
+
+import { AuthContext } from '../contexts/auth';
+
+
+
+// isPrivate - para saber se a rota é privada ou não
+// usando o sprad operator(...) vai passar todo o resto aqui
+
+export default function RouteWrapper({
+    component: Component,
+    isPrivate,
+    ...rest
+}){
+    const{signed, loading}=useContext(AuthContext)
+    
+      //const loadin = false;
+
+    //Condicionais de verificação de login
+    if(loading){
+        return(
+            <div></div>
+        )        
+    }
+
+    //Se não está logado e rota que está tentando acessar for privada será direcionado para login
+    if( !signed && isPrivate){
+        return <Redirect to='/' />
+    }
+
+    //Logado e acessa página não privada
+    if( signed && !isPrivate){
+        return <Redirect to='/dashboard' />
+    }
+    
+    
+    return(
+        <Route
+            {...rest}
+            render={props => (
+                <Component{...props} />
+                )} //Para retornar o componente com todas as propriedades
+        />
+    )
+}
+
+
+
+---------------------Para testar pode ir em auth.js:
+
+
+
+
+import { useState, useEffect, createContext} from 'react';
+import firebase from '../services/firebaseConnection';
+
+export const AuthContext = createContext({});
+
+//prover
+function AuthProvider({ children }){
+
+    //teste para dashboard
+    const [user, setUser] = useState({id: 1, nome: "Leandro"}); // testar http://localhost:3000/dashboard
+
+    //const [user, setUser] = useState(null);  //Inicia como logout.
+
+    const [loadingAuth, setLoadingAuth] = useState(false); // após login mudar para true lá na função
+    //const [loading, setLoading] = useState(true); // iniciar carregando
+
+//signed é um boolean para saber se está logado ou não.
+// signed: !!user    isso converte para boolean
+    return(
+        <AuthContext.Provider value={{signed: !!user, user}}>
+            {children}
+        </AuthContext.Provider>
+    )
+}
+
+export default AuthProvider;
+
+
+
+--------------------Atualizar auth.js:
+
+
+
+import { useState, useEffect, createContext} from 'react';
+import firebase from '../services/firebaseConnection';
+
+export const AuthContext = createContext({});
+
+//prover
+function AuthProvider({ children }){
+
+    //teste para dashboard
+    //const [user, setUser] = useState({id: 1, nome: "Leandro"}); // testar http://localhost:3000/dashboard
+
+    const [user, setUser] = useState(null);  //Inicia como logout
+    const [loadingAuth, setLoadingAuth] = useState(false); // após login mudar para true lá na função
+    const [loading, setLoading] = useState(true); // iniciar carregando
+
+    //useEffect para saber se tem algum usuário logado:
+    useEffect(()=>{
+
+        function loadStorage(){
+            const storageUser = localStorage.getItem('SistemaUser');
+
+            if(storageUser){
+                setUser(JSON.parse(storageUser));
+                //se já tiver usuário:
+                setLoading(false);
+            }
+            setLoading(false);
+        }
+        loadStorage();
+
+    },[])
+
+
+//função para cadastarr usuário:
+async function signUp( email, password, nome ){
+    //alterar para true:
+    setLoadingAuth(true);
+    await firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then( async(value)=>{      
+        let uid =value.user.uid;
+        
+          //cadastrar no DB
+        await firebase.firestore().collection('users')
+        .doc(uid).set({
+            nome: nome,
+            avatarUrl: null, //vai começar com a imagema avatar padrão
+        })
+        .then( ()=>{
+            // disponibilizar para o setUser
+            let data = {
+                uid: uid,
+                nome: nome,
+                email: value.user.email,
+                avatarUrl: null,
+            }//passar data para setUser. Pode salvar em localStorage também, mais abaixo
+            setUser(data);
+            storageUser(data); //Veja função criada mais abaixo
+
+            setLoadingAuth(false);
+
+        })
+    })//Tratar os casos de erros
+    .catch((error)=>{
+        console.log(error);
+        setLoadingAuth(false);
+    })
+
+
+
+}//localStorage salvar data aqui também
+
+
+function storageUser(data){
+    localStorage.setItem('SistemaUser', JSON.stringify(data)) //'SistemaUser' foi o nome dado acima em localStorage
+}
+
+
+
+//signed é um boolean para saber se está logado ou não.
+// signed: !!user    isso converte para boolean
+//tudo que quiser disponibilizar globalmente é só inserir aqui {signed: !!user, user, loading}
+    return(
+        <AuthContext.Provider value={{
+            signed: !!user, 
+            user, 
+            loading, 
+            signUp,
+
+            }}> {/*signUp pode ser disponibilizado aqui tb e precisa ser acessado na página do componente signUp*/}
+            {children}
+        </AuthContext.Provider>
+    )
+}
+
+export default AuthProvider;
+
+
+---------------------------------------------
+Até agora se não estiver logado foça a ir para login ou cadastro
+
+---------------------------------------------
+Cadastar usuário novo.
+
+
+----------Atualizar auth.js:
+
+
+
+
+
+import { useState, useEffect, createContext} from 'react';
+import firebase from '../services/firebaseConnection';
+
+export const AuthContext = createContext({});
+
+//prover
+function AuthProvider({ children }){
+
+    //teste para dashboard
+    //const [user, setUser] = useState({id: 1, nome: "Leandro"}); // testar http://localhost:3000/dashboard
+
+    const [user, setUser] = useState(null);  //Inicia como logout
+    const [loadingAuth, setLoadingAuth] = useState(false); // após login mudar para true lá na função
+    const [loading, setLoading] = useState(true); // iniciar carregando
+
+    //useEffect para saber se tem algum usuário logado:
+    useEffect(()=>{
+
+        function loadStorage(){
+            const storageUser = localStorage.getItem('SistemaUser');
+
+            if(storageUser){
+                setUser(JSON.parse(storageUser));
+                //se já tiver usuário:
+                setLoading(false);
+            }
+            setLoading(false);
+        }
+        loadStorage();
+
+    },[])
+
+
+//função para cadastarr usuário:
+async function signUp( email, password, nome ){
+    //alterar para true:
+    setLoadingAuth(true);
+    await firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then( async(value)=>{      
+        let uid =value.user.uid;
+        
+          //cadastrar no DB
+        await firebase.firestore().collection('users')
+        .doc(uid).set({
+            nome: nome,
+            avatarUrl: null, //vai começar com a imagema avatar padrão
+        })
+        .then( ()=>{
+            // disponibilizar para o setUser
+            let data = {
+                uid: uid,
+                nome: nome,
+                email: value.user.email,
+                avatarUrl: null,
+            }//passar data para setUser. Pode salvar em localStorage também, mais abaixo
+            setUser(data);
+            storageUser(data); //Veja função criada mais abaixo
+
+            setLoadingAuth(false);
+
+        })
+    })//Tratar os casos de erros
+    .catch((error)=>{
+        console.log(error);
+        setLoadingAuth(false);
+    })
+
+
+
+}//localStorage salvar data aqui também
+
+
+function storageUser(data){
+    localStorage.setItem('SistemaUser', JSON.stringify(data)) //'SistemaUser' foi o nome dado acima em localStorage
+}
+
+
+
+//signed é um boolean para saber se está logado ou não.
+// signed: !!user    isso converte para boolean
+//tudo que quiser disponibilizar globalmente é só inserir aqui {signed: !!user, user, loading}
+    return(
+        <AuthContext.Provider value={{
+            signed: !!user, 
+            user, 
+            loading, 
+            signUp,
+
+            }}> {/*signUp pode ser disponibilizado aqui tb e precisa ser acessado na página do componente signUp*/}
+            {children}
+        </AuthContext.Provider>
+    )
+}
+
+export default AuthProvider;
+
+
+
+
+
+
+-----------------SingUp/index.js:
+
+
+
+
+import { useState, useContext } from 'react'; //importar useContext
+import { AuthContext } from '../../contexts/auth';//importar useContext
+
+import { Link } from 'react-router-dom';
+import logo from '../../assets/logoJPG.jpg';
+
+function SignUp() {
+  const [nome, setNome] =useState('');
+  const [email, setEmail] =useState('');
+  const [password, setPassword] =useState('');
+
+  //importar useContext e chamar signUp
+  const { signUp } = useContext(AuthContext); //importar useContext
+
+  
+  async function handleSubmit(e){
+    e.preventDefault(); //Para não atualizar a página
+    //alert('teste handleSubmit')
+
+//importar useContext aqui com signUp. Se tudo for DIFERENTE  de vazio, cadastrar usuário.
+    if(nome !== ''  && email !== ''  &&  password !== ''){
+      signUp(nome, email, password) //Tem que ser NA MESMA ORDEM DECLARADA que está em auth.js
+
+    }
+
+  }
+
+    return (
+      <div className='container-center'>
+        <div className='login'>
+          <div className='logo-area'>
+            <div> 
+            <img src={logo} alt='Logo marca' />
+            </div>
+          </div>
+          
+
+            <form onSubmit={handleSubmit}>
+              <h1>Cadastro</h1>
+
+              <input type="text" placeholder='Digite seu nome' value={nome} onChange={(e)=> setNome(e.target.value) }/>
+
+
+              <input type="text" placeholder='E-mail' value={email} onChange={(e)=> setEmail(e.target.value) }/>
+              <input type="password" placeholder='************'value={password} onChange={(e)=> setPassword(e.target.value) }/>
+             
+              <button type='submit'>Cadastrar</button>
+            </form>
+
+
+            <Link to='/'>Já possui uma conta? Entrar.</Link>
+
+
+        </div>        
+      </div>
+    
+    );
+  }
+  
+  export default SignUp;
+
+  //http://localhost:3000/register
+
+
+
+
+------------------------------------------
+
+Criar opção para Sair da conta de usuário.
+
+Em auth.js:
+
+
+
+
+
+import { useState, useEffect, createContext} from 'react';
+import firebase from '../services/firebaseConnection';
+
+export const AuthContext = createContext({});
+
+//prover
+function AuthProvider({ children }){
+
+    //teste para dashboard
+    //const [user, setUser] = useState({id: 1, nome: "Leandro"}); // testar http://localhost:3000/dashboard
+
+    const [user, setUser] = useState(null);  //Inicia como logout
+    const [loadingAuth, setLoadingAuth] = useState(false); // após login mudar para true lá na função
+    const [loading, setLoading] = useState(true); // iniciar carregando
+
+    //useEffect para saber se tem algum usuário logado:
+    useEffect(()=>{
+
+        function loadStorage(){
+            const storageUser = localStorage.getItem('SistemaUser');
+
+            if(storageUser){
+                setUser(JSON.parse(storageUser));
+                //se já tiver usuário:
+                setLoading(false);
+            }
+            setLoading(false);
+        }
+        loadStorage();
+
+    },[])
+
+
+//função para cadastarr usuário:
+async function signUp( email, password, nome ){
+    //alterar para true:
+    setLoadingAuth(true);
+    await firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then( async(value)=>{      
+        let uid =value.user.uid;
+        
+          //cadastrar no DB
+        await firebase.firestore().collection('users')
+        .doc(uid).set({
+            nome: nome,
+            avatarUrl: null, //vai começar com a imagema avatar padrão
+        })
+        .then( ()=>{
+            // disponibilizar para o setUser
+            let data = {
+                uid: uid,
+                nome: nome,
+                email: value.user.email,
+                avatarUrl: null,
+            }//passar data para setUser. Pode salvar em localStorage também, mais abaixo
+            setUser(data);
+            storageUser(data); //Veja função criada mais abaixo
+
+            setLoadingAuth(false);
+
+        })
+    })//Tratar os casos de erros
+    .catch((error)=>{
+        console.log(error);
+        setLoadingAuth(false);
+    })
+
+
+
+}//localStorage salvar data aqui também
+
+
+function storageUser(data){
+    localStorage.setItem('SistemaUser', JSON.stringify(data)) //'SistemaUser' foi o nome dado acima em localStorage
+}
+
+// signout
+async function signOut() {
+    await firebase.auth().signOut();
+
+    //limpar localStorage
+    localStorage.removeItem('SistemaUser');
+
+    //voltar ao estado normal do user que é null
+    setUser(null);
+
+
+    //precisa disponibilizar essa função em AutoContext.Provider value
+}
+
+
+
+//signed é um boolean para saber se está logado ou não.
+// signed: !!user    isso converte para boolean
+//tudo que quiser disponibilizar globalmente é só inserir aqui {signed: !!user, user, loading}
+    return(
+        <AuthContext.Provider value={{
+            signed: !!user, 
+            user, 
+            loading, 
+            signUp,
+            signOut, //Ir em Dashboard importar useContext e AuthContext para criar o botão sair
+
+            }}> {/*signUp pode ser disponibilizado aqui tb e precisa ser acessado na página do componente signUp*/}
+            {children}
+        </AuthContext.Provider>
+    )
+}
+
+export default AuthProvider;
+
+
+
+
+--------Criar o botão "Sair" em  Dashboard/index.js:
+
+************Observação, ainda não tem o sistema de login até este ponto. 
+
+
+// Importar useContext e AuthContext para poder deslogar
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
+
+
+
+export default function Dashboard(){
+
+const{ signOut }=useContext(AuthContext); // Para deslogar. Agora criar um botão.
+
+
+    return(
+        <div>
+            Página DASHBOARD
+            <button onClick={()=> signOut() }>Sair da conta</button>
+        </div>
+    )
+}
+
+
+
+************Criar login de usuário cadastrado. Em auth:
+
+
+
+
+
+import { useState, useEffect, createContext} from 'react';
+import firebase from '../services/firebaseConnection';
+
+export const AuthContext = createContext({});
+
+//prover
+function AuthProvider({ children }){
+
+    //teste para dashboard
+    //const [user, setUser] = useState({id: 1, nome: "Leandro"}); // testar http://localhost:3000/dashboard
+
+    const [user, setUser] = useState(null);  //Inicia como logout
+    const [loadingAuth, setLoadingAuth] = useState(false); // após login mudar para true lá na função
+    const [loading, setLoading] = useState(true); // iniciar carregando
+
+    //useEffect para saber se tem algum usuário logado:
+    useEffect(()=>{
+
+        function loadStorage(){
+            const storageUser = localStorage.getItem('SistemaUser');
+
+            if(storageUser){
+                setUser(JSON.parse(storageUser));
+                //se já tiver usuário:
+                setLoading(false);
+            }
+            setLoading(false);
+        }
+        loadStorage();
+
+    },[])
+
+
+//função para cadastarr usuário:
+async function signUp( email, password, nome ){
+    //alterar para true:
+    setLoadingAuth(true);
+    await firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then( async(value)=>{      
+        let uid =value.user.uid;
+        
+          //cadastrar no DB
+        await firebase.firestore().collection('users')
+        .doc(uid).set({
+            nome: nome,
+            avatarUrl: null, //vai começar com a imagema avatar padrão
+        })
+        .then( ()=>{
+            // disponibilizar para o setUser
+            let data = {
+                uid: uid,
+                nome: nome,
+                email: value.user.email,
+                avatarUrl: null,
+            }//passar data para setUser. Pode salvar em localStorage também, mais abaixo
+            setUser(data);
+            storageUser(data); //Veja função criada mais abaixo
+
+            setLoadingAuth(false);
+
+        })
+    })//Tratar os casos de erros
+    .catch((error)=>{
+        console.log(error);
+        setLoadingAuth(false);
+    })
+
+
+
+}//localStorage salvar data aqui também
+
+
+function storageUser(data){
+    localStorage.setItem('SistemaUser', JSON.stringify(data)) //'SistemaUser' foi o nome dado acima em localStorage
+}
+
+// signout
+async function signOut() {
+    await firebase.auth().signOut();
+
+    //limpar localStorage
+    localStorage.removeItem('SistemaUser');
+
+    //voltar ao estado normal do user que é null
+    setUser(null);
+
+
+    //precisa disponibilizar essa função em AutoContext.Provider value
+}
+
+
+//Criar o acesso login do usuário:
+async function signIn(email, password){
+    setLoadingAuth(true); //Para logar, passar para true
+
+    await firebase.auth().signInWithEmailAndPassword(email, password)
+    //Quando logar recebe value
+    .then(async (value)=>{ // Se logou vai entrar em then
+        let uid = value.user.uid;
+
+        const userProfile = await firebase.firestore().collection('users').doc(uid).get(); //.get é para buscar a informação
+
+        let data = {
+            uid: uid,
+            nome: userProfile.data().nome,
+            email: value.user.email,
+            avatarUrl: userProfile.data().avatarUrl,
+        };
+
+        setUser(data); // Se deu tudo certo vai passar para data
+        storageUser(data);  // Salvar no localStorage
+        setLoadingAuth(false);
+
+
+
+    })
+    .catch((error)=>{
+        console.log(error);
+        setLoadingAuth(false);
+
+    })
+}
+
+
+
+
+
+
+
+//signed é um boolean para saber se está logado ou não.
+// signed: !!user    isso converte para boolean
+//tudo que quiser disponibilizar globalmente é só inserir aqui {signed: !!user, user, loading}
+    return(
+        <AuthContext.Provider value={{
+            signed: !!user, 
+            user, 
+            loading, 
+            signUp,
+            signOut, //Ir em Dashboard importar useContext e AuthContext para criar o botão sair
+
+            signIn, //Para fazer o login. Agora ir em pages/index.js
+
+            }}> {/*signUp pode ser disponibilizado aqui tb e precisa ser acessado na página do componente signUp*/}
+            {children}
+        </AuthContext.Provider>
+    )
+}
+
+export default AuthProvider;
+
+
+
+
+
+
+----------------------------
+
+Em pages/SignIn/index.js:
+
+
+
+
+
+//Para logar importar useContext e AuthContext
+
+import { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../contexts/auth';
+
+import './signin.css';
+import logo from '../../assets/logoJPG.jpg';
+
+function SignIn() {
+  const [email, setEmail] =useState('');
+  const [password, setPassword] =useState('');
+
+  //Para logar importar useContext e AuthContext e fazer uma verificação
+  const { signIn } = useContext(AuthContext);
+
+
+  async function handleSubmit(e){
+    e.preventDefault(); //Para não atualizar a página
+    //alert('teste handleSubmit')
+
+//Para logar importar useContext e AuthContext e fazer uma verificação
+    if(email !== '' &&  password !== ''){
+     //Se for diferente de vazio, então vai chamar signIn
+      signIn(email, password);
+    }
+
+  }
+
+    return (
+      <div className='container-center'>
+        <div className='login'>
+          <div className='logo-area'>
+            <div> 
+            <img src={logo} alt='Logo marca' />
+            </div>
+          </div>
+          
+
+            <form onSubmit={handleSubmit}>
+              <h1>Entrar</h1>
+              <input type="text" placeholder='E-mail' value={email} onChange={(e)=> setEmail(e.target.value) }/>
+              <input type="password" placeholder='************'value={password} onChange={(e)=> setPassword(e.target.value) }/>
+              <button type='submit'>Entrar</button>
+            </form>
+            <Link to='/register'>Criar uma conta.</Link>
+
+        </div>        
+      </div>
+    
+    );
+  }
+  
+  export default SignIn;
+
+
+
+*******************************************************************
+
+-------------------------------------pegar o loadinAuth para 
+controlar acesso e avisar usuário que está carregando, está buscando informações
+
+Em auth.js disponibilizar ele:
+
+
+
+return(
+        <AuthContext.Provider value={{
+            signed: !!user, 
+            user, 
+            loading, 
+            signUp,
+            signOut, //Ir em Dashboard importar useContext e AuthContext para criar o botão sair
+
+            signIn, //Para fazer o login. Agora ir em pages/index.js
+
+            loadingAuth, //Para avisar usuário que está carregando informações
+
+            }}> {/*signUp pode ser disponibilizado aqui tb e precisa ser acessado na página do componente signUp*/}
+            {children}
+        </AuthContext.Provider>
+
+
+
+
+-------------Em SignIn/index.js alterar o botão usando loadingAuth:
+
+Primeiro chamar ele aqui:
+  //Para logar importar useContext e AuthContext e fazer uma verificação
+  const { signIn, loadingAuth } = useContext(AuthContext);
+
+Agora o botão, como ele é um boolean fica facil:
+
+
+<button type='submit'>{loadingAuth?'Carregando...' : 'Entrar'} </button>
+
+Tive que fazer um ajuste no css para caber o carregando...
+
+
+
+
+--------Fazer a mesma coisa em cadastro:
+
+
+
+
+  //importar useContext e chamar signUp
+  const { signUp, loadingAuth } = useContext(AuthContext); //importar useContext
+
+
+ 
+ <button type='submit'>{loadingAuth?'Carregando...' : 'Cadastrar'} </button>
+            
+
+*******************************************************************
+
+
+Agora pode criar os alertas com toast:
+npm install react-toastify
+
+Em app.js importar ele e o container:
+
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
+import 'react-toastify/dist/ReactToastify.css';
+
+import { BrowserRouter } from "react-router-dom";
+import AuthProvider from "./contexts/auth"; //Agora terá acesso aos dados do usuário em todos os lugares
+import Routes from "./routes";
+
+import { ToastContainer } from 'react-toastify';
+
+function App() {
+
+  return (
+    <AuthProvider>    
+        <BrowserRouter>
+            <ToastContainer autoClose={2000} />
+            <Routes/>
+        
+        </BrowserRouter>
+   </AuthProvider>
+  
+  );
+}
+
+export default App;
+
+
+
+--------------------------
+Assim que logar pode dar um alerta de bem vindo.
+Em auth.js:
+
+import { toast } from 'react-toastify';
+
+e usar onde for interessante.
+toast.success('Bem vindo à plataforma');
+toast.error('Opss! Algo deu errado...');
+
+
+
+--------------------------------------------
+----------------------------------------
+
+Em dashboard construir um header lateral.
+
+----------------------------------------
+--------------------------------------------
+src/components/Header/index.js e header.css:
+
+
+import './header.css';
+
+export default function Header(){
+    return(
+        <div className="header">
+
+            cabeçalho
+
+        </div>
+    )
+}
+
+
+
+-----
+para chamar em dashboard:
+
+
+
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
+
+//cabeçalho
+import  Header  from "../../components/Header";
+
+export default function Dashboard(){
+
+const{ signOut }=useContext(AuthContext); // Para deslogar. Agora criar um botão.
+
+
+    return(
+        <div>
+            <Header/>
+
+            Página DASHBOARD
+            <button onClick={()=> signOut() }>Sair da conta</button>
+        </div>
+    )
+}
+
+
+------------------Atualizando Header/index:
+
+import './header.css';
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/auth';
+
+import avatar from '../../assets/avatar.png';
+
+import { Link } from 'react-router-dom';
+
+/*   Veja: https://react-icons.github.io/react-icons/
+                     Instalar: npm install react-icons */
+import { FiHome, FiUser, FiSettings  } from "react-icons/fi"; //Nomes dos icones                     
+
+
+export default function Header(){
+    const { user } = useContext(AuthContext);
+
+
+
+    return(
+        <div className="sidebar">
+            {/*Pode exibir o que quiser de 'user' aqui. Exemplo:
+            <span> Header: {user.email} </span>*/}
+
+            <div>  {/*Atenção aqui!! Por algum motivo está invertido. null deveria ser verdadeiro o avatar*/}
+                <img src={ user.avatarUrl === null ? user.avatarUrl : avatar  } alt="Foto avatar"/>
+               
+            </div>   
+
+{/*   Veja: https://react-icons.github.io/react-icons/
+                     Instalar: npm install react-icons */}
+            <Link to='/dashboard'> 
+                <FiHome color='#fff' size={25} />
+            Chamados           
+            </Link>   
+
+
+            <Link to='/customers'> 
+                <FiUser color='#fff' size={25} />
+            Clientes            
+            </Link>    
+
+
+            <Link to='/profile'> 
+                <FiSettings color='#fff' size={25} />
+            Configurações            
+            </Link>     
+
+        </div>
+    )
+}
+
+
+
+
+
+-------------------Atualizando Header/header.CSS:
+
+************ Foram feitas diversas alterações do original para ficar com mesma aparência.
+
+
+.sidebar{
+    margin: 0;
+    padding: 0;
+    width: 200px; 
+    background-color: #181c2e;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+
+}
+
+.sidebar div{
+    background: url('../../assets/cover.jpg');
+    background-color: #181c2e;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 150px;   
+
+}
+
+.sidebar div{
+    padding-top: 25px;    
+}
+
+
+.sidebar div img {
+    border-radius: 50%;
+    margin-left: 48px; /*original era margin: auto; o problema é que estava trazendo avatar para E*/
+    width: 100px;
+    height: 100px;
+    -webkit-filter: drop-shadow(2px 3px 6px #121212);
+    filter: drop-shadow(2px 3px 6px #121212);/*borda suave*/
+    object-fit: cover;
+    ;
+
+}
+
+.sidebar a{
+    display: block; /*alinha na vertical*/
+    color: rgba(255,255,255, 0.7);
+    padding: 16px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;/*alinha centro na vertical*/
+    transition: ease-in-out .4s;
+}
+
+.sidebar a svg{
+    margin-right: .5em;
+}
+
+.sidebar a:hover{
+    background-color: #121212;
+    color: #fff;
+
+}
+
+@media screen and (max-width: 700px){ /*Quando a largura máxima for 700px será aplicado o que tem aqui dentro*/
+    .sidebar{
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+
+    .sidebar a{
+        float: left; /*icones vão ficar da E para a D */
+    }
+
+    .sidebar div{
+        display: none;/* Em aparelhos pequenos vai desaparecer o menu lateral quando melhor que 700px */
+    }
+    .sidebar a svg{
+        display: none;/* Quando melhor que 700px os icones vao desaparecer*/
+    }
+}
+
+
+/* Em aparelhos pequenos vai desaparecer os ICONES quando melhor que 400px*/
+@media screen and (max-width:400px){
+    .sidebar a{
+        text-align: center;
+        float: none;
+        display: none;
+    }
+    .sidebar a svg{
+        display: none; /*Quando melhor que 400px os icones vao desaparecer*/
+    }
+}
+
+
+
+
+
+--------------------------
+--------------------------
+
+Criar um componente para título, pois vai alterar a função dele.
+
+
+
+src/components/Title/index.js e title.css.
+
+Em index.js:
+
+import './title.css';
+
+export default function Title(){
+    return (
+        <div>
+            <h1>Teste título</h1>
+
+        </div>
+    )
+}
+
+
+-----------Em pages. Criar Profile/index.js e profile.css:
+
+import './profile.css';
+
+export default function Profile(){
+    return (
+        <div>
+            <h1>Teste Profile. Perfil do usuário</h1>
+
+        </div>
+    )
+}
+
+
+
+
+
+--------------Atualizar rotas. routes/index.js:
+
+import { Switch } from 'react-router-dom';
+import Route from './Route';
+
+import SignIn from '../pages/SignIn';
+import SignUp from '../pages/SignUp';
+import Dashboard from '../pages/Dashboard';
+
+import Profile from '../pages/Profile';
+
+export default function Routes(){
+    return(
+        <Switch>
+            <Route exact path='/' component={SignIn} />
+            <Route exact path='/register' component={SignUp} />
+            <Route exact path='/dashboard' component={Dashboard}  isPrivate  />
+
+            <Route exact path='/profile' component={ Profile } isPrivate />
+
+        </Switch>
+    )
+}
+
+
+--------------Atualizar Profile/index.js importando Header:
+
+import './profile.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+
+import { FiSettings } from 'react-icons/fi';
+
+export default function Profile(){
+    return (
+        <div>
+            <Header/>
+
+            <div className='content'>
+                <Title name="Meu Perfil">
+                    <FiSettings color='#121212' size={25} />
+
+                </Title>
+            </div>
+
+        </div>
+    )
+}
+
+// testar http://localhost:3000/profile
+
+/* <Title></Title>  foi passado dessa forma para poder receber de children.
+Cada tela ele terá um icone diferente, vai ser melhor assim
+
+*/
+
+
+
+
+
+--------------Atualizar Title/index.js importar Profile com children e 
+***name*** que foi criado em Profile  <Title name="Meu Perfil"> :
+
+
+import './title.css';
+
+export default function Title(  { children, name }  ){
+    return (
+        <div className="title">
+
+            { children }
+
+            <span>{ name }</span>  {/* <----name foi achamada de <Title name ="Meu Perfil" > que está em Profile */}
+
+         </div>
+    )
+}
+
+
+
+---------Title/title.css:
+
+.title{
+    display: flex;
+    flex-direction: row; /* row - será alinhadp e, linha */
+    align-items: center;
+    margin: 1em 0;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    padding: .8em;
+}
+
+.title span{
+    margin-left: 1em;
+    font-size: 1.5em;
+}
+
+/* Em header.css deve ajustar as margens left
+
+*/
+
+
+
+**************************************Ajustes em header.css:
+/* Ajustes de profile */
+.content{
+    margin-left: 200px;
+    padding: 1px 16px;
+}
+
+/* FIM ajustes de profile */
+
+
+@media screen and (max-width: 700px){ /*Quando a largura máxima for 700px será aplicado o que tem aqui dentro*/
+    .sidebar{
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+
+    .sidebar a{
+        float: left; /*icones vão ficar da E para a D */
+    }
+
+    .sidebar div{
+        display: none;/* Em aparelhos pequenos vai desaparecer o menu lateral quando melhor que 700px */
+    }
+    .sidebar a svg{
+        display: none;/* Quando melhor que 700px os icones vao desaparecer*/
+    }
+
+
+    /* Ajustes de profile */
+    div.content{
+        margin-left: 0px;
+        padding: 1px 16px;
+    }
+
+/* FIM ajustes de profile */
+
+}
+
+**************************************
+Profile são as comfigurações pessoais. Agora vem a parte de editar dados e salvar.
+http://localhost:3000/profile
+
+------
+--------------Atualizar Profile/index.js com  o container de atualização:
+
+
+
+
+// Para editar informações de usuário deve importar:
+import { useState, useContext } from 'react';
+import { AuthContext } from '../../contexts/auth';
+import avatar from  '../../assets/avatar.png';
+
+import './profile.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+
+import { FiSettings, FiUpload } from 'react-icons/fi';
+
+
+export default function Profile(){
+
+// Para editar informações de usuário
+const { user, signOut } = useContext(AuthContext);
+const [nome, setNome] = useState(user && user.nome); //Não logou em branco, deve passar os parâmetros do acesso do usuário.
+const [email, setEmail] = useState(user && user.email);
+const [avatarUrl, setAvatarUrl] = useState(user && user.avatarUrl);
+
+    return (
+        <div>
+            <Header/>
+            <div className='content'>
+                <Title name ="Meu Perfil" >
+                    <FiSettings  size={25} />
+                </Title>
+
+
+        {/*// Para editar informações de usuário */}
+                <div className='container'>
+                    <form className='form-profile'>
+                        
+                        <label className='label-avatar'> 
+                        {/* criar um ícone sobre a imagem do avatar*/}
+                            <span>
+                                <FiUpload color='#fff' size={25} />
+                            </span>
+                            <input type='file' accept='  image/*  ' />  {/* Na edição de img vai aceitar somente imagens*/}
+                            <br/> 
+                            {/* Caso não tenha imagem deverá exibir o avatar padrão*/}
+                            { avatarUrl === null ? 
+                                <img src={avatar} width="200" height='200' alt='Imagem do perfil do usuário' /> 
+                                : 
+                                <img src={avatarUrl} width="200" height='200' alt='Imagem do perfil do usuário' />
+                            }
+                        </label>
+
+
+                        <label>Nome</label>
+                        <input type='text' value={ nome } onChange={ (e)=> setNome(e.target.value)}/>
+
+
+                        <label>E-mail</label>
+                        <input type='text' value={ email } disabled={true}/> {/* Tirar o onChange para não trocar o email*/}
+
+                        <button type='submit'>Salvar</button>
+                    </form>
+                </div>
+
+{/* Criar um campo novo fora de form pra sair, mas pode usar as mesmas configurações de container*/}
+                <div className='container'>
+                    <button className='logout-btn' onClick={ ()=> signOut() } >
+                        Sair
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
+    )
+}
+
+// testar http://localhost:3000/profile
+
+/* <Title></Title>  foi passado dessa forma para poder receber de children.
+Cada tela ele terá um icone diferente, vai ser melhor assim
+
+*/
+
+
+
+
+--------------Editar Profile/profile.css:
+
+
+
+.container{
+    display: flex;
+    background-color: #f8f8f8;
+    border-radius: 5px;
+    padding: .8em;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.label-avatar{
+    width: 280px;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer
+    /*para saber o tamanho durante esta edição:
+    background-color: #121212;
+    */
+}
+
+.label-avatar input{
+    display: none; /*Para tirar o botão enviar */    
+}
+
+.label-avatar span{
+    /*Deixar sobreposto*/
+    z-index: 99;
+
+    position: absolute; /*aqui vai arrastar para sobrepor*/
+    /*background-color: #121212;*/ 
+    opacity: 0.7;
+    transition: all .5s;
+
+
+}
+
+.label-avatar span:hover{
+    opacity: 1;
+    transform: scale(1.5);
+}
+
+.form-profile img{
+    margin-bottom: 1em;
+    border-radius: 50%; /* para arredondar a imagem */
+    object-fit: cover; /* PARA NÃO DESTORCER */
+}
+
+.form-profile label{
+    margin-bottom: .5em;
+    font-size: 1.4em;
+}
+
+.form-profile input, textarea, select{
+    margin-bottom: 1em;
+    padding: .5em;
+    border: 0;
+    border-radius: 5px;
+    max-width: 600px;
+}
+
+.form-profile input:disabled{
+    cursor: not-allowed; /* vai aparecer o cursor de PROIBIDO onde não pode editar */
+}
+
+/*
+.form-profile button{
+    max-width: 600px;
+} Não vai precisar, definido menor em outro lugar*/
+
+.logout-btn{
+    padding: 5px 20px;
+    background-color: transparent;
+    border: 1px solid #121212;
+    border-radius: 8px;
+    font-size: 1.2em;
+
+    /*alinhar dentro do botão*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+
+-------------Atualizar dashboard, pode tirar o botão agora:
+
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
+
+//cabeçalho
+import  Header  from "../../components/Header";
+
+export default function Dashboard(){
+
+const{ signOut }=useContext(AuthContext); // Para deslogar. Agora criar um botão.
+
+
+    return(
+        <div>
+            <Header/>
+
+            Página DASHBOARD
+            {/* Após configurar profile pode tirar esse botão
+            <button onClick={()=> signOut() }>Sair da conta</button>
+            */}
+        </div>
+    )
+}
+
+
+
+------------------------------
+Agora fazer a parte funcional de edição de dados.
+
+Precisa pensar que pode atualizar um ou outro, mas por exemplo, se atualizar somente
+nome e eviar vai receber uma imagem vazia por não ter sido editada. Precisa tratar isso.
+
+
+------------------------------Atualizar Profile/index.js:
+
+// Para editar informações de usuário deve importar:
+import { useState, useContext } from 'react';
+import { AuthContext } from '../../contexts/auth';
+import avatar from  '../../assets/avatar.png';
+import './profile.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+import { FiSettings, FiUpload } from 'react-icons/fi';
+
+/*Parte funcional de edição. */
+import firebase from '../../services/firebaseConnection';
+
+
+export default function Profile(){
+
+// Para editar informações de usuário
+//setUser, //Precisa acrescentar setUser em auth para alterar useSatate de USER
+//storageUser, //Precisa acrescentar storageUser em auth para salvar no localStorage
+const { user, signOut, setUser,  storageUser} = useContext(AuthContext);
+
+const [nome, setNome] = useState(user && user.nome); //Não logou em branco, deve passar os parâmetros do acesso do usuário.
+const [email, setEmail] = useState(user && user.email);
+const [avatarUrl, setAvatarUrl] = useState(user && user.avatarUrl);
+
+/*Parte funcional de edição. 
+Enviar imagem para useState separada*/
+const [imageAvatar, setImageAvatar] = useState(null);
+
+/*Parte funcional de edição. */
+async function handleSave(e){
+    e.preventDefault();
+    //alert('teste botão salvar')
+
+    if(imageAvatar === null && nome !== ''){
+        await firebase.firestore().collection('users')
+        .doc(user.uid)
+        .update({
+            nome: nome,
+        })
+        .then(()=>{
+            //setUser, //Precisa acrescentar setUser em auth para alterar useSatate de USER
+            //storageUser, //Precisa acrescentar storageUser em auth para salvar no localStorage
+            let data = {
+                ...user, // tudo que tiver em user, mas neste caso só o nome
+                nome: nome,                
+            };
+            //Para atualizar
+            setUser(data);
+            storageUser(data);
+	    toast.success('Atualizado com sucesso.');
+
+        })
+    }
+
+
+
+}
+
+
+    return (
+        <div>
+            <Header/>
+            <div className='content'>
+                <Title name ="Meu Perfil" >
+                    <FiSettings  size={25} />
+                </Title>
+
+
+        {/*// Para editar informações de usuário */}
+                <div className='container'>
+
+                    {/*Parte funcional de edição. Adicionar onSubmit*/}
+                    <form className='form-profile' onSubmit={handleSave}>
+                        
+                        <label className='label-avatar'> 
+                        {/* criar um ícone sobre a imagem do avatar*/}
+                            <span>
+                                <FiUpload color='#fff' size={25} />
+                            </span>
+                            <input type='file' accept='  image/*  ' />  {/* Na edição de img vai aceitar somente imagens*/}
+                            <br/> 
+                            {/* Caso não tenha imagem deverá exibir o avatar padrão*/}
+                            { avatarUrl === null ? 
+                                <img src={avatar} width="200" height='200' alt='Imagem do perfil do usuário' /> 
+                                : 
+                                <img src={avatarUrl} width="200" height='200' alt='Imagem do perfil do usuário' />
+                            }
+                        </label>
+
+
+                        <label>Nome</label>
+                        <input type='text' value={ nome } onChange={ (e)=> setNome(e.target.value)}/>
+
+
+                        <label>E-mail</label>
+                        <input type='text' value={ email } disabled={true}/> {/* Tirar o onChange para não trocar o email*/}
+
+                        <button type='submit'>Salvar</button>
+                    </form>
+                </div>
+
+{/* Criar um campo novo fora de form pra sair, mas pode usar as mesmas configurações de container*/}
+                <div className='container'>
+                    <button className='logout-btn' onClick={ ()=> signOut() } >
+                        Sair
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
+    )
+}
+
+// testar http://localhost:3000/profile
+
+/* <Title></Title>  foi passado dessa forma para poder receber de children.
+Cada tela ele terá um icone diferente, vai ser melhor assim
+
+*/
+
+
+--------------Para funcionar deve atualizar auth.js:
+neste local:
+
+
+return(
+        <AuthContext.Provider value={{
+            signed: !!user, 
+            user, 
+            loading, 
+            signUp,
+            signOut, //Ir em Dashboard importar useContext e AuthContext para criar o botão sair
+            signIn, //Para fazer o login. Agora ir em pages/index.js
+            loadingAuth, //Para avisar usuário que está carregando informações
+
+            setUser, //Precisa acrescentar setUser em auth para alterar useSatate de USER
+            storageUser, //Precisa acrescentar storageUser em auth para salvar no localStorage
+            
+            }}> {/*signUp pode ser disponibilizado aqui tb e precisa ser acessado na página do componente signUp*/}
+            {children}
+        </AuthContext.Provider>
+    )
+ 
+
+
+-----------------------
+---------------------
+Para alterar IMAGEM tem que atualizar STORAGE FAREBASE.
+---------------------
+-----------------------
+Importar storage em service/firebaseConnection.js:
+
+
+// VERSÃO 9 compatível do firebase. Depois é interessante corrigir todo o código para versão MODULAR
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+
+// Para editar ARQUIVOS de usuário
+import 'firebase/compat/storage';
+
+const firebaseConfig = {
+...
+
+
+
+----------------------------
+Disponibilizar no DB o storage:
+https://console.firebase.google.com/project/sistema-729c7/storage?hl=pt-br
+
+// Para editar ARQUIVOS de usuário atualizar Profile/index.js:
+
+
+// Para editar informações de usuário deve importar:
+import { useState, useContext } from 'react';
+import { AuthContext } from '../../contexts/auth';
+import avatar from  '../../assets/avatar.png';
+import './profile.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+import { FiSettings, FiUpload } from 'react-icons/fi';
+
+/*Parte funcional de edição. */
+import firebase from '../../services/firebaseConnection';
+import { toast } from 'react-toastify';
+
+
+export default function Profile(){
+
+// Para editar informações de usuário
+//setUser, //Precisa acrescentar setUser em auth para alterar useSatate de USER
+//storageUser, //Precisa acrescentar storageUser em auth para salvar no localStorage
+const { user, signOut, setUser,  storageUser} = useContext(AuthContext);
+
+const [nome, setNome] = useState(user && user.nome); //Não logou em branco, deve passar os parâmetros do acesso do usuário.
+const [email, setEmail] = useState(user && user.email);
+const [avatarUrl, setAvatarUrl] = useState(user && user.avatarUrl);
+
+// Para editar ARQUIVOS de usuário
+/*Parte funcional de edição. 
+Enviar imagem para useState separada*/
+const [imageAvatar, setImageAvatar] = useState(null);
+
+
+// Para editar ARQUIVOS de usuário
+function handleFile(e){
+    //console.log(e.target.files[0]);// Ver em inspecionar
+
+    if (e.target.files[0]){ //Se tem imagem vai parrar para image
+        const image = e.target.files[0];
+
+        //Selecionar tipos de arquivos. Criar um if encapsulado no if
+        if(image.type === 'image/jpeg' || image.type === 'image/png')
+        setImageAvatar(image); //Recebe image
+
+        //Preview
+        setAvatarUrl(URL.createObjectURL(e.target.files[0]));
+    }else{
+        alert('Envie imagem nos formatos JPEG ou PNG.');
+        setImageAvatar(null);
+        return null; //Parar a execução do cod
+    }
+}
+
+
+// Para editar ARQUIVOS de usuário. Aqui vai enviar para o Db Firebase
+async function handleUpload(){
+    const currentUid = user.uid; //Para saber qual usuário está logado
+
+    //.ref(`image/${currentUid}/${imageAvatar.name}`) vai criar subdiretórios para armazenar a imagem no Firestorage
+    const uploadTask = await firebase.storage()
+        .ref(`images/${currentUid}/${imageAvatar.name}`)
+        .put(imageAvatar)
+        .then(async ()=>{
+            console.log("Imagem enviada com sucesso.");
+
+            //Atualizar null no firestore com o nome da imagem
+            await firebase.storage().ref(`images/${currentUid}`)
+            .child(imageAvatar.name).getDownloadURL()
+            .then(async (url)=>{
+                let urlFoto = url;
+
+            //Agora é só enviar. Se alterou nome tb será enviado
+            await firebase.firestore().collection('users')
+            .doc(user.uid)
+            .update({
+                avatarUrl: urlFoto,
+                nome: nome
+            })
+            //Se deu tudo certo.
+            .then(()=>{
+                let data = {
+                    ...user,
+                    avatarUrl: urlFoto,
+                    nome: nome
+                };
+                setUser(data);
+                storageUser(data);
+                toast.success("Imagem alterada no banco de dados")
+
+            })
+            })
+        })
+
+}
+
+
+
+/*Parte funcional de edição. */
+async function handleSave(e){
+    e.preventDefault();
+    //alert('teste botão salvar')
+
+    if(imageAvatar === null && nome !== ''){
+        await firebase.firestore().collection('users')
+        .doc(user.uid)
+        .update({
+            nome: nome
+        })
+        .then(()=>{
+            //setUser, //Precisa acrescentar setUser em auth para alterar useSatate de USER
+            //storageUser, //Precisa acrescentar storageUser em auth para salvar no localStorage
+            let data = {
+                ...user, // tudo que tiver em user, mas neste caso só o nome
+                nome: nome                
+            };
+            //Para atualizar
+            setUser(data);
+            storageUser(data);
+            toast.success('Dados atualizados com sucesso.');
+        })
+    }
+    // Para editar ARQUIVOS de usuário
+    else if(nome !=='' && imageAvatar !== null){
+        //Criar uma função
+        handleUpload();
+        toast.success('Imagem atualizada com sucesso.');
+    }
+
+
+
+
+}
+
+
+    return (
+        <div>
+            <Header/>
+            <div className='content'>
+                <Title name ="Meu Perfil" >
+                    <FiSettings  size={25} />
+                </Title>
+
+
+        {/*// Para editar informações de usuário */}
+                <div className='container'>
+
+                    {/*Parte funcional de edição. Adicionar onSubmit*/}
+                    <form className='form-profile' onSubmit={handleSave}>
+                        
+                        <label className='label-avatar'> 
+                        {/* criar um ícone sobre a imagem do avatar*/}
+                            <span>
+                                <FiUpload color='#fff' size={25} />
+                            </span>
+
+        {/* // Para editar ARQUIVOS de usuário
+        A função onChange={handleFile} é para criar uma preview */}
+                            <input type='file' accept='  image/*  ' onChange={handleFile} />  {/* Na edição de img vai aceitar somente imagens*/}
+                            
+                            <br/> 
+                            {/* Caso não tenha imagem deverá exibir o avatar padrão*/}
+                            { avatarUrl === null ? 
+                                <img src={avatar} width="200" height='200' alt='Imagem do perfil do usuário' /> 
+                                : 
+                                <img src={avatarUrl} width="200" height='200' alt='Imagem do perfil do usuário' />
+                            }
+                        </label>
+
+
+                        <label>Nome</label>
+                        <input type='text' value={ nome } onChange={ (e)=> setNome(e.target.value)}/>
+
+
+                        <label>E-mail</label>
+                        <input type='text' value={ email } disabled={true}/> {/* Tirar o onChange para não trocar o email*/}
+
+                        <button type='submit'>Salvar</button>
+                    </form>
+                </div>
+
+{/* Criar um campo novo fora de form pra sair, mas pode usar as mesmas configurações de container*/}
+                <div className='container'>
+                    <button className='logout-btn' onClick={ ()=> signOut() } >
+                        Sair
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
+    )
+}
+
+// testar http://localhost:3000/profile
+
+/* <Title></Title>  foi passado dessa forma para poder receber de children.
+Cada tela ele terá um icone diferente, vai ser melhor assim
+
+*/
+
+
+
+-------------------------------------------------------
+---------------------------------------
+Cadastrar e editar clientes
+
+---------------------------------------
+-------------------------------------------------------
+
+pages/Custumers/ index.js e customers.css:
+
+import './customers.css';
+
+export default function Customers(){
+    return(
+        <div>
+            CUSTOMERS - Pg Clientes
+        </div>
+    )
+}
+
+
+---------Corrigir rotas em routes/index.js:
+
+
+// Switch - um componente por página
+import { Switch } from 'react-router-dom';
+import Route from './Route';
+
+import SignIn from '../pages/SignIn';
+import SignUp from '../pages/SignUp';
+import Dashboard from '../pages/Dashboard';
+import Profile from '../pages/Profile';
+
+import Customers from '../pages/Customers';
+
+export default function Routes(){
+    return(
+        <Switch>
+            <Route exact path='/' component={SignIn} />
+            <Route exact path='/register' component={SignUp} />
+            
+            <Route exact path='/dashboard' component={Dashboard}  isPrivate  />
+            <Route exact path='/profile' component={Profile} isPrivate />
+
+            <Route exact path='/customers' component={ Customers } isPrivate />
+
+        </Switch>
+    )
+}
+
+
+
+-----Verificar se está tudo ok e  atualizar
+pages/Custumers/ index.js:
+
+http://localhost:3000/customers
+
+
+importar o Header e Title.
+
+
+-----Parte gráfica:
+
+
+import { useState } from 'react';
+
+/*Pode utilizar as mesmas configurações CSS que já foram feitas em profile.
+Para isso basta utilizar os memos nomes das classes.
+*/
+import './customers.css';
+
+import Title from '../../components/Title';
+import Header from '../../components/Header';
+
+import { FiUser } from 'react-icons/fi';
+
+
+export default function Customers(){
+    const[nomeFantasia, setNomeFantasia] = useState('');
+    const[cnpj, setCnpj] = useState('');
+    const[endereco, setEndereco] = useState('');
+
+    async function handleAdd(e){
+        e.preventDefault();
+       // alert('Teste Cadastrar no formulário')
+    }
+
+    return(
+        <div>
+            <Header/>
+            <div className='content'>
+                <Title name='Clientes'>
+                    <FiUser size={25} />
+                </Title>
+
+                <div className='container'>
+                    <form className='form-profile customers' onSubmit={ handleAdd }>
+                        <label>Nome da empresa</label>
+                        <input type='text' placeholder='Nome da empresa' value={ nomeFantasia } 
+                        onChange={(e)=>setNomeFantasia(e.target.value)} />
+
+                        <label>CNPJ</label>
+                        <input type='text' placeholder='CNPJ' value={ cnpj } 
+                        onChange={ (e)=>setCnpj(e.target.value) } />
+
+                        <label>Endereço</label>
+                        <input type='text' placeholder='Endereço' value={ endereco } 
+                        onChange={(e)=>setEndereco(e.target.value)} />
+
+                        <button type='submit'>Cadastrar</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+
+-----Parte funcional, importar firebase:
+
+
+import { useState } from 'react';
+
+/*Pode utilizar as mesmas configurações CSS que já foram feitas em profile.
+Para isso basta utilizar os memos nomes das classes. */
+import './customers.css';
+
+import Title from '../../components/Title';
+import Header from '../../components/Header';
+
+import { FiUser } from 'react-icons/fi';
+import { toast } from 'react-toastify';
+
+import firebase from '../../services/firebaseConnection';
+
+export default function Customers(){
+    const[nomeFantasia, setNomeFantasia] = useState('');
+    const[cnpj, setCnpj] = useState('');
+    const[endereco, setEndereco] = useState('');
+
+
+    async function handleAdd(e){
+        e.preventDefault();
+       // alert('Teste Cadastrar no formulário')
+       if(nomeFantasia !== '' && cnpj !== '' && endereco !== ''){
+        await firebase.firestore().collection('customers')
+        .add({
+            nomeFantasia: nomeFantasia,
+            cnpj: cnpj,
+            endereco: endereco
+        })
+        //Se deu tudo certo limpar dasdos do formulário
+        .then(()=>{
+            setNomeFantasia('');
+            setCnpj('');
+            setEndereco('');
+            toast.success('Empresa cadsatrada com sucesso.')
+        })
+        //Se deu algun erro
+        .catch((error)=>{
+            console.log(error);
+            toast.error('Erro ao cadastar empresa');
+        })
+       }else{
+        toast.error('Preencha todos os campos.')
+       }
+
+    }
+
+
+
+    return(
+        <div>
+            <Header/>
+            <div className='content'>
+                <Title name='Clientes'>
+                    <FiUser size={25} />
+                </Title>
+
+                <div className='container'>
+                    <form className='form-profile customers' onSubmit={ handleAdd }>
+                        <label>Nome da empresa</label>
+                        <input type='text' placeholder='Nome da empresa' value={ nomeFantasia } 
+                        onChange={(e)=>setNomeFantasia(e.target.value)} />
+
+                        <label>CNPJ</label>
+                        <input type='text' placeholder='CNPJ' value={ cnpj } 
+                        onChange={ (e)=>setCnpj(e.target.value) } />
+
+                        <label>Endereço</label>
+                        <input type='text' placeholder='Endereço' value={ endereco } 
+                        onChange={(e)=>setEndereco(e.target.value)} />
+
+                        <button type='submit'>Cadastrar</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+
+
+------------------------------------
+--------------------------------
+Agora será editada a DASHBOARD para fazer a parte de chamadas.
+--------------------------------
+------------------------------------
+Parte grafica:
+
+import './dashboard.css';
+// Importar useContext e AuthContext para poder deslogar
+import { useState } from "react";
+
+
+import  Header  from "../../components/Header";
+import Title from '../../components/Title';
+import { FiMessageSquare, FiPlus} from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+
+
+export default function Dashboard(){
+
+
+
+    return(
+        <div>
+            <Header/>
+
+            <div className='content'>  
+                <Title name='Atendimentos'>
+                    <FiMessageSquare size={25}/>                    
+                </Title>
+
+                <div className='container dashboard'>
+                    <span>Verificando... Nenhum chamado registrado.</span>
+
+                    <Link  to='new' className='new' >
+                        <FiPlus color='fff' size={25} />
+                        Novo chamado
+                    </Link>
+                </div>
+            </div>           
+        </div>
+    )
+}
+
+
+
+----------------------
+dashboard.css:
+
+
+.dashboard{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;    
+    align-items: center;
+}
+
+.dashboard span{
+    margin: 2em 0;
+    font-weight: 600;
+    font-size: 1.2em;
+}
+
+.new{
+    float:right;
+    margin-bottom: 1.5em;
+    background-color: #3baf42;
+    color: #fff;
+    border: 0;
+    padding: .7em;
+    font-weight: 500;
+    font-size: 1.1em;
+    border-radius: 7px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: ease-in 0.2s;
+}
+
+/*afastar o icone*/
+.new svg{
+    margin-right: 5px;
+}
+
+.new:hover{
+    background-color: #62d56a;
+    transform: scale(1.1);
+}
+
+.new:active{
+    background-color: #dddfe1;
+    color: #3baf42;      
+}
+
+
+
+--------------Atualizar DASHBOARD com a parte funcional.
+
+
+import './dashboard.css';
+// Importar useContext e AuthContext para poder deslogar
+import { useState } from "react";
+
+
+import  Header  from "../../components/Header";
+import Title from '../../components/Title';
+import { FiMessageSquare, FiPlus} from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+
+
+export default function Dashboard(){
+
+    const[chamados, setChamados]=useState([]);// Será em um array pois terá uma lista
+
+
+
+
+    return(
+        <div>
+            <Header/>
+
+            <div className='content'>  
+                <Title name='Atendimentos'>
+                    <FiMessageSquare size={25}/>                    
+                </Title>
+
+
+{/*Se for igual a zero quer dizer que não há chamados */}
+                { chamados.length===0 ? (  
+                    <div className='container dashboard'>
+                        <span>Verificando... Nenhum chamado registrado.</span>
+
+                        <Link  to='new' className='new' >
+                            <FiPlus color='fff' size={25} />
+                            Novo chamado
+                        </Link>
+                    </div>
+
+                ) : (
+                    
+                   <>   {/*Pode usar um "Fragment" aqui para não alterar formatação. Não tem estilização */}
+
+                        <Link  to='new' className='new' >
+                            <FiPlus color='fff' size={25} />
+                            Novo chamado
+                        </Link>           
+                   
+                   </>
+                )} 
+
+                
+            </div>           
+        </div>
+    )
+}
+
+
+
+
+
+--------------------Criar tabelas de chamados na DASHBOARD:
+Criar tabelas para simulação aqui e depois a parte funcional.
+
+
+import './dashboard.css';
+// Importar useContext e AuthContext para poder deslogar
+import { useState } from "react";
+
+
+import  Header  from "../../components/Header";
+import Title from '../../components/Title';
+import { FiMessageSquare, FiPlus, FiSearch, FiEdit2} from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+
+
+export default function Dashboard(){
+
+    //Para simular um chamado durante o desenvolvimento coloque 1, 
+    //mas para o uso normal, deixar em branco, inicia vazia.
+    const[chamados, setChamados]=useState([1]);// Será em um array pois terá uma lista.
+
+
+
+
+    return(
+        <div>
+            <Header/>
+
+            <div className='content'>  
+                <Title name='Atendimentos'>
+                    <FiMessageSquare size={25}/>                    
+                </Title>
+
+
+{/*Se for igual a zero quer dizer que não há chamados */}
+                { chamados.length===0 ? (  
+                    <div className='container dashboard'>
+                        <span>Verificando... Nenhum chamado registrado.</span>
+
+                        <Link  to='new' className='new' >
+                            <FiPlus color='fff' size={25} />
+                            Novo chamado
+                        </Link>
+                    </div>
+
+                ) : (
+                    
+                   <>   {/*Pode usar um "Fragment" aqui para não alterar formatação */}
+
+                        <Link  to='new' className='new' >
+                            <FiPlus color='fff' size={25} />
+                            Novo chamado
+                        </Link> 
+
+
+                        {/*Tabelas dos chamados */}
+                        <table>
+                            <thead>{/*Cabeçalho */}
+                                <tr>
+                                    <th scope='col'>Cliente</th>
+                                    <th scope='col'>Assunto</th>
+                                    <th scope='col'>Status</th>
+                                    <th scope='col'>Cadastrado em</th>
+                                    <th scope='col'>#</th>                                    
+                                </tr>                                
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td data-label='Cliente'>cliente escola</td>
+                                    <td data-label='Assunto'>assunto</td>
+                                    <td data-label='Status'>
+                                        <span className='badge' style={{backgroundColor: '#5cb85c'}} >Aberto</span>
+                                    </td>
+                                    <td data-label='Cadastrado'>20/02/2022</td>
+                                    <td data-label='#'>
+                                        <button className='action' style={{backgroundColor:'#3583f6'  }}>
+                                            <FiSearch color='#fff' size={17} />
+                                        </button>
+                                        <button className='action' style={{backgroundColor:'#f6a935'  }}>
+                                            <FiEdit2 color='#fff' size={17} />
+                                        </button>
+                                        
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>          
+                   
+                   </>
+                )} 
+
+                
+            </div>           
+        </div>
+    )
+}
+
+
+
+--------------------
+Aplicando css dashboard.css:
+
+
+
+.dashboard{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;    
+    align-items: center;
+}
+
+.dashboard span{
+    margin: 2em 0;
+    font-weight: 600;
+    font-size: 1.2em;
+}
+
+.new{
+    float:right;
+    margin-bottom: 1.5em;
+    background-color: #3baf42;
+    color: #fff;
+    border: 0;
+    padding: .7em;
+    font-weight: 500;
+    font-size: 1.1em;
+    border-radius: 7px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: ease-in 0.2s;
+}
+
+/*afastar o icone*/
+.new svg{
+    margin-right: 5px;
+}
+
+.new:hover{
+    background-color: #62d56a;
+    transform: scale(1.1);
+}
+
+.new:active{
+    background-color: #dddfe1;
+    color: #3baf42;      
+}
+
+
+/* Tabelas dos chamados */
+
+table{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+}
+
+table caption{
+    font-size: 1.5em;
+    margin: .5em 0 .75em;
+}
+
+table tr{
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: .35em;
+}
+
+table th, td{
+    padding: .62em;
+    text-align: center;
+}
+
+table th{
+    font-size: .95em;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+table td .action{
+    border: 0;
+    padding: 5px;
+    margin-right: 8px;
+    align-items: center;
+    display: inline-block;
+    border-radius: 5px;    
+}
+
+table td .action svg{
+    vertical-align: middle;
+}
+
+table td .badge{
+    padding: 3px 8px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+@media screen and (max-width: 600px ){
+    table{
+        border: 0;        
+    }
+
+    table caption{
+        font-size: 1.3em;
+    }
+
+    table thead{
+        border: none;
+        clip: rect(0 0 0 0);
+        height:1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    table tr{
+        border-bottom: 3px solid #ddd;
+        display: block;
+        margin-bottom: .65em;
+    }
+
+    table td{
+        border-bottom: 1px solid #ddd;
+        display: block;
+        font-size: .8em;
+        text-align: right;
+    }
+
+    /* Tudo acima foi alinhado à D,
+    agora o cabeçalho à E */
+    table td::before{
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    /* tirar o risco horizontal da última linha */
+    table td:last-child{
+        border-bottom: 0;
+    }
+    
+}
+
+
+
+---------------Criar o cadastro das chamadas.
+Em pages/New/index.js e new.css:
+
+import './new.css';
+
+export default function New(){
+    return(
+        <div>
+            Tela de cadastro chamados
+        </div>
+    )
+}
+
+
+-----Atualizar rotas routes/index.js:
+
+
+// Switch - um componente por página
+import { Switch } from 'react-router-dom';
+import Route from './Route';
+
+import SignIn from '../pages/SignIn';
+import SignUp from '../pages/SignUp';
+import Dashboard from '../pages/Dashboard';
+import Profile from '../pages/Profile';
+import Customers from '../pages/Customers';
+
+import New from '../pages/New';
+
+export default function Routes(){
+    return(
+        <Switch>
+            <Route exact path='/' component={SignIn} />
+            <Route exact path='/register' component={SignUp} />
+            
+            <Route exact path='/dashboard' component={Dashboard}  isPrivate  />
+            <Route exact path='/profile' component={Profile} isPrivate />
+            <Route exact path='/customers' component={ Customers } isPrivate />
+
+            <Route exact path='/new' component={ New } isPrivate />
+
+        </Switch>
+    )
+}
+
+
+
+------------------Atualizar pages/New/index.js:
+A parte funcional será feita depois.
+
+
+import './new.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+
+import { FiPlusCircle } from 'react-icons/fi';
+
+
+export default function New(){
+    return(
+        <div>
+            <Header/>
+            
+            <div className='content'>
+                <Title name="Novo Chamado">
+                    <FiPlusCircle size={25}/>
+                </Title>
+
+                <div className='container'>
+                    <form className='form-profile'>
+                        
+                        <label>Cliente</label>
+                        <select>
+                            <option key={1} value={1}>
+                                Lcf
+                            </option>
+                        </select>
+
+                        <label>Assunto</label>
+                        <select>
+                            <option value="Suporte">Suporte</option>
+                            <option value="Visita técnica">Visita técnica</option>
+                            <option value="Financeiro">Financeiro</option>
+                        </select>
+
+                        <label>Status</label>
+                        <div className='status'>
+                            <input type='radio' name='radio' value="Aberto"
+                            /> <span>Aberto</span>
+
+                            <input type='radio' name='radio' value="Progresso"
+                            /> <span>Progresso</span>
+
+                            <input type='radio' name='radio' value="Atendido"
+                            /> <span>Atendido</span>
+                        </div>
+
+                        <label>Solicitação</label>
+                        <textarea type="text"  placeholder='Descreva o problema.' />
+
+                        <button type='submit'>Registrar</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+------------------pages/New/new.css:
+
+form textarea{
+    height: 120px;
+    resize: none;
+}
+
+form input[type=radio]{
+    margin: 5px 0 15px 0;
+}
+
+/*Vai espaçar todos à E menos o primeiro */
+form input[type=radio]:not(:first-child){
+    margin-left: 30px;
+}
+
+.status span{
+    padding-left: .1em;
+    font-size: 1.2em;
+}
+
+.form-profile label:not(:first-child){
+    margin-top: 15px;
+
+}
+
+
+
+
+--------------------------Funcionalidades
+------------------Atualizar pages/New/index.js:
+
+Deixar a parte do cliente por ultimo.
+
+
+
+import './new.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+import { FiPlusCircle } from 'react-icons/fi';
+
+import { useState } from 'react';
+
+export default function New(){
+
+    const [assunto, setAssunto]=useState('Suporte');
+    const [status, setStatus]=useState('Aberto');
+    const [complemento, setComplemento]=useState('');
+
+    function handleRegister(e){
+        e.preventDefault();
+        //alert('teste botão registrar')
+
+    }
+
+
+    //Trocar assunto
+    function handleChancheSelect(e){
+        setAssunto(e.target.value);
+        //console.log(e.target.value);
+    }
+
+
+    //Trocar status
+    function handleOptionChanche(e){
+       setStatus(e.target.value); 
+       //console.log(e.target.value);
+
+    }
+
+
+    return(
+        <div>
+            <Header/>
+            
+            <div className='content'>
+                <Title name="Novo Chamado">
+                    <FiPlusCircle size={25}/>
+                </Title>
+
+                <div className='container'>
+                    <form className='form-profile'   onSubmit={handleRegister} >
+                        
+                        <label>Cliente</label>
+                        <select>
+                            <option key={1} value={1}>
+                                Lcf
+                            </option>
+                        </select>
+
+                        <label>Assunto</label>
+                        <select value={assunto} onChange={handleChancheSelect}>
+                            <option value="Suporte">Suporte</option>
+                            <option value="Visita técnica">Visita técnica</option>
+                            <option value="Financeiro">Financeiro</option>
+                        </select>
+
+                        <label>Status</label>
+                        <div className='status'>
+                            <input type='radio' name='radio' value="Aberto"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Aberto'} 
+                            /> <span>Aberto</span>  {/*    checked={status === 'Aberto'}  Compara qual está marcado inicialmente */}
+
+                            <input type='radio' name='radio' value="Progresso"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Progresso'}
+                            /> <span>Progresso</span>
+
+                            <input type='radio' name='radio' value="Atendido"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Atendido'}
+                            /> <span>Atendido</span>
+                        </div>
+
+                        <label>Solicitação</label>
+                        <textarea type="text"  placeholder='Descreva...' 
+                        value={complemento}
+                        onChange={(e)=> setComplemento(e.target.value)}
+                        />
+
+                        <button type='submit'>Registrar</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+
+
+
+--------------------------Funcionalidades, parte do cliente
+------------------Atualizar pages/New/index.js:
+
+
+
+
+import './new.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+import { FiPlusCircle } from 'react-icons/fi';
+
+import firebase from '../../services/firebaseConnection';
+
+//Funcionalidades, parte do cliente
+import { useState, useEffect, useContext } from 'react';// useContext - vai precisar do id do user por isso importar
+import { AuthContext } from '../../contexts/auth';
+import { toast } from 'react-toastify';
+
+export default function New(){
+
+    const [assunto, setAssunto]=useState('Suporte');
+    const [status, setStatus]=useState('Aberto');
+    const [complemento, setComplemento]=useState('');
+
+    //Funcionalidades, parte do cliente
+    const {user} =useContext(AuthContext);
+    const [customers, setCustomers]=useState([]);
+    const [loadCustomers, setLoadCustomers]=useState(true);//Para exibir ao usuário que está buscando info no BD
+    const [customerSelected, setCustomerSelected ]=useState(0);//Pegar o ID selecionado do cliente pois será tudo dinâmico
+    useEffect(()=>{
+        async function loadCustomers(){ // vai chamar "customers" no BD, verificar o nome correto que foi criado.
+            await firebase.firestore().collection('customers')
+            .get()
+            .then((snapshot)=>{
+                let lista = [];
+
+                snapshot.forEach((doc)=>{
+                    lista.push({
+                        id: doc.id,
+                        nomeFantasia: doc.data().nomeFantasia,
+                        cnpj: doc.data().cnpj,
+                    })
+                })
+                //Fazer a verificação
+                if(lista.length === 0){
+                    console.log('Nenhuma empresa encontrada');
+                    setCustomers([{ id:'1', nomeFantasia:'Nenhuma empresa encontrada'}]);//Caso erro, não pode ficar vazio, nesse caso vai ficar em "branco"
+                    setLoadCustomers(false);//Volta para false
+                    toast.error('Nenhuma empresa encontrada');
+                    return;
+                }//Se encontrou, passar a lista
+                setCustomers(lista);
+                setLoadCustomers(false);//Volta para false
+
+                //Passar tuddo isso para o formulário em <select>
+            })
+            .catch((error=>{
+                console.log(error);
+                setLoadCustomers(false);//Volta para false
+                setCustomers([{ id:'1', nomeFantasia:''}]);//Caso erro, não pode ficar vazio, nesse caso vai ficar em "branco"
+                toast.error('Erro! Algo inesperado ocorreu.')
+            }))
+        }
+
+        loadCustomers();
+    },[]);
+
+
+
+
+    function handleRegister(e){
+        e.preventDefault();
+        //alert('teste botão registrar')
+
+    }
+
+
+    //Trocar assunto
+    function handleChancheSelect(e){
+        setAssunto(e.target.value);
+        //console.log(e.target.value);
+    }
+
+
+    //Trocar status
+    function handleOptionChanche(e){
+       setStatus(e.target.value); 
+       //console.log(e.target.value);
+    }
+
+
+//Trocar cliente na opção do chamado
+async function handleChancheCustomers(e){
+   // console.log('INDEX do cliente selecionado: ', e.target.value );
+   // console.log('Cliente selecionado: ', customers[e.target.value])
+    setCustomerSelected(e.target.value);
+}
+
+    return(
+        <div>
+            <Header/>
+            
+            <div className='content'>
+                <Title name="Novo Chamado">
+                    <FiPlusCircle size={25}/>
+                </Title>
+
+                <div className='container'>
+                    <form className='form-profile'   onSubmit={handleRegister} >
+                        
+                        <label>Cliente</label>
+                        {loadCustomers ? (
+                            <input type='text' disabled={true} value="Carregando clientes..." />
+                        ):(
+
+
+                            <select value={customerSelected} onChange={handleChancheCustomers}>
+                            {customers.map((item, index)=>{
+                                return(
+                                <option key={item.id} value={index}>
+                                    {item.nomeFantasia} 
+                                    
+                                </option>
+                                                              
+                                )                                
+                            })}
+                        </select>
+
+                        )}
+                        
+
+                        <label>Assunto</label>
+                        <select value={assunto} onChange={handleChancheSelect}>
+                            <option value="Suporte">Suporte</option>
+                            <option value="Visita técnica">Visita técnica</option>
+                            <option value="Financeiro">Financeiro</option>
+                        </select>
+
+                        <label>Status</label>
+                        <div className='status'>
+                            <input type='radio' name='radio' value="Aberto"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Aberto'} 
+                            /> <span>Aberto</span>  {/*    checked={status === 'Aberto'}  Compara qual está marcado inicialmente */}
+
+                            <input type='radio' name='radio' value="Progresso"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Progresso'}
+                            /> <span>Progresso</span>
+
+                            <input type='radio' name='radio' value="Atendido"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Atendido'}
+                            /> <span>Atendido</span>
+                        </div>
+
+                        <label>Solicitação</label>
+                        <textarea type="text"  placeholder='Descreva...' 
+                        value={complemento}
+                        onChange={(e)=> setComplemento(e.target.value)}
+                        />
+
+                        <button type='submit'>Registrar</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+
+--------------------------Melhorando o cnpj
+
+
+import './new.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+import { FiPlusCircle } from 'react-icons/fi';
+
+import firebase from '../../services/firebaseConnection';
+
+//Funcionalidades, parte do cliente
+import { useState, useEffect, useContext } from 'react';// useContext - vai precisar do id do user por isso importar
+import { AuthContext } from '../../contexts/auth';
+import { toast } from 'react-toastify';
+
+export default function New(){
+
+    const [assunto, setAssunto]=useState('Suporte');
+    const [status, setStatus]=useState('Aberto');
+    const [complemento, setComplemento]=useState('');
+
+    //Funcionalidades, parte do cliente
+    const {user} =useContext(AuthContext);
+    const [customers, setCustomers]=useState([]);
+    const [loadCustomers, setLoadCustomers]=useState(true);//Para exibir ao usuário que está buscando info no BD
+    const [customerSelected, setCustomerSelected ]=useState(0);//Pegar o ID selecionado do cliente pois será tudo dinâmico
+    useEffect(()=>{
+        async function loadCustomers(){ // vai chamar "customers" no BD, verificar o nome correto que foi criado.
+            await firebase.firestore().collection('customers')
+            .get()
+            .then((snapshot)=>{
+                let lista = [];
+
+                snapshot.forEach((doc)=>{
+                    lista.push({
+                        id: doc.id,
+                        nomeFantasia: doc.data().nomeFantasia,
+                        cnpj: doc.data().cnpj,
+                    })
+                })
+                //Fazer a verificação
+                if(lista.length === 0){
+                    console.log('Nenhuma empresa encontrada');
+                    setCustomers([{ id:'1', nomeFantasia:'Nenhuma empresa encontrada'}]);//Caso erro, não pode ficar vazio, nesse caso vai ficar em "branco"
+                    setLoadCustomers(false);//Volta para false
+                    toast.error('Nenhuma empresa encontrada');
+                    return;
+                }//Se encontrou, passar a lista
+                setCustomers(lista);
+                setLoadCustomers(false);//Volta para false
+
+                //Passar tuddo isso para o formulário em <select>
+            })
+            .catch((error=>{
+                console.log(error);
+                setLoadCustomers(false);//Volta para false
+                setCustomers([{ id:'1', nomeFantasia:''}]);//Caso erro, não pode ficar vazio, nesse caso vai ficar em "branco"
+                toast.error('Erro! Algo inesperado ocorreu.')
+            }))
+        }
+
+        loadCustomers();
+    },[]);
+
+
+
+
+    function handleRegister(e){
+        e.preventDefault();
+        //alert('teste botão registrar')
+
+    }
+
+
+    //Trocar assunto
+    function handleChancheSelect(e){
+        setAssunto(e.target.value);
+        //console.log(e.target.value);
+    }
+
+
+    //Trocar status
+    function handleOptionChanche(e){
+       setStatus(e.target.value); 
+       //console.log(e.target.value);
+    }
+
+
+//Trocar cliente na opção do chamado
+async function handleChancheCustomers(e){
+   // console.log('INDEX do cliente selecionado: ', e.target.value );
+   // console.log('Cliente selecionado: ', customers[e.target.value])
+    setCustomerSelected(e.target.value);    
+}
+
+    return(
+        <div>
+            <Header/>
+            
+            <div className='content'>
+                <Title name="Novo Chamado">
+                    <FiPlusCircle size={25}/>
+                </Title>
+
+                <div className='container'>
+                    <form className='form-profile'   onSubmit={handleRegister} >
+                        
+                        <label>Cliente </label>
+                        {loadCustomers ? (
+                            <input type='text' disabled={true} value="Carregando clientes..." />
+                        ):(
+
+
+                        <select value={customerSelected} onChange={handleChancheCustomers}>
+                            {customers.map((item, index)=>{
+                                return(                                    
+                                <option key={item.id} value={index}>
+                                    {item.nomeFantasia}                                 
+                                </option>                                                             
+                                )                                
+                            })}         
+                                              
+                        </select>
+                        
+                        )}
+                        {/* Para exibir o CNPJ fora do select */}
+                      {customerSelected !== 0 && <p><strong>CNPJ: </strong>{customers[customerSelected].cnpj}</p>}
+                     
+
+                        
+
+                        <label>Assunto</label>
+                        <select value={assunto} onChange={handleChancheSelect}>
+                            <option value="Suporte">Suporte</option>
+                            <option value="Visita técnica">Visita técnica</option>
+                            <option value="Financeiro">Financeiro</option>
+                        </select>
+
+                        <label>Status do chamado</label>
+                        <div className='status'>
+                            <input type='radio' name='radio' value="Aberto"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Aberto'} 
+                            /> <span>Aberto</span>  {/*    checked={status === 'Aberto'}  Compara qual está marcado inicialmente */}
+
+                            <input type='radio' name='radio' value="Progresso"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Progresso'}
+                            /> <span>Progresso</span>
+
+                            <input type='radio' name='radio' value="Atendido"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Atendido'}
+                            /> <span>Atendido</span>
+                        </div>
+
+                        <label>Solicitação</label>
+                        <textarea type="text"  placeholder='Descreva...' 
+                        value={complemento}
+                        onChange={(e)=> setComplemento(e.target.value)}
+                        />
+
+                        <button type='submit'>Registrar</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+---------------------Atualizando New/index.js em handleRegister:
+
+
+
+import './new.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+import { FiPlusCircle } from 'react-icons/fi';
+
+import firebase from '../../services/firebaseConnection';
+
+//Funcionalidades, parte do cliente
+import { useState, useEffect, useContext } from 'react';// useContext - vai precisar do id do user por isso importar
+import { AuthContext } from '../../contexts/auth';
+import { toast } from 'react-toastify';
+
+export default function New(){
+
+    const [assunto, setAssunto]=useState('Suporte');
+    const [status, setStatus]=useState('Aberto');
+    const [complemento, setComplemento]=useState('');
+
+    //Funcionalidades, parte do cliente
+    const {user} =useContext(AuthContext);
+    const [customers, setCustomers]=useState([]);
+    const [loadCustomers, setLoadCustomers]=useState(true);//Para exibir ao usuário que está buscando info no BD
+    const [customerSelected, setCustomerSelected ]=useState(0);//Pegar o ID selecionado do cliente pois será tudo dinâmico
+    useEffect(()=>{
+        async function loadCustomers(){ // vai chamar "customers" no BD, verificar o nome correto que foi criado.
+            await firebase.firestore().collection('customers')
+            .get()
+            .then((snapshot)=>{
+                let lista = [];
+
+                snapshot.forEach((doc)=>{
+                    lista.push({
+                        id: doc.id,
+                        nomeFantasia: doc.data().nomeFantasia,
+                        cnpj: doc.data().cnpj,
+                    })
+                })
+                //Fazer a verificação
+                if(lista.length === 0){
+                    console.log('Nenhuma empresa encontrada');
+                    setCustomers([{ id:'1', nomeFantasia:'Nenhuma empresa encontrada'}]);//Caso erro, não pode ficar vazio, nesse caso vai ficar em "branco"
+                    setLoadCustomers(false);//Volta para false
+                    toast.error('Nenhuma empresa encontrada');
+                    return;
+                }//Se encontrou, passar a lista
+                setCustomers(lista);
+                setLoadCustomers(false);//Volta para false
+
+                //Passar tuddo isso para o formulário em <select>
+            })
+            .catch((error=>{
+                console.log(error);
+                setLoadCustomers(false);//Volta para false
+                setCustomers([{ id:'1', nomeFantasia:''}]);//Caso erro, não pode ficar vazio, nesse caso vai ficar em "branco"
+                toast.error('Erro! Algo inesperado ocorreu.')
+            }))
+        }
+
+        loadCustomers();
+    },[]);
+
+
+
+
+    async function handleRegister(e){
+        e.preventDefault();
+        //alert('teste botão registrar')
+
+        await firebase.firestore().collection('chamados')
+        .add({
+            created: new Date(),
+            cliente: customers[customerSelected].nomeFantasia,
+            clienteId: customers[customerSelected].id,
+            assunto: assunto,
+            status: status,
+            complemento: complemento,
+            userId: user.uid,
+        })/*Aula 117*/
+        .then(()=>{
+            toast.success('Registrado com sucesso.');
+            setComplemento('');
+            setCustomerSelected(0);
+
+        })
+        .catch((err)=>{
+            console.log(err);
+            toast.error('Erro! Erro ao registrar.')
+        })
+
+
+
+    }
+
+
+    //Trocar assunto
+    function handleChancheSelect(e){
+        setAssunto(e.target.value);
+        //console.log(e.target.value);
+    }
+
+
+    //Trocar status
+    function handleOptionChanche(e){
+       setStatus(e.target.value); 
+       //console.log(e.target.value);
+    }
+
+
+//Trocar cliente na opção do chamado
+async function handleChancheCustomers(e){
+   // console.log('INDEX do cliente selecionado: ', e.target.value );
+   // console.log('Cliente selecionado: ', customers[e.target.value])
+    setCustomerSelected(e.target.value);    
+}
+
+    return(
+        <div>
+            <Header/>
+            
+            <div className='content'>
+                <Title name="Novo Chamado">
+                    <FiPlusCircle size={25}/>
+                </Title>
+
+                <div className='container'>
+                    <form className='form-profile'   onSubmit={handleRegister} >
+                        
+                        <label>Cliente </label>
+                        {loadCustomers ? (
+                            <input type='text' disabled={true} value="Carregando clientes..." />
+                        ):(
+
+
+                        <select value={customerSelected} onChange={handleChancheCustomers}>
+                            {customers.map((item, index)=>{
+                                return(                                    
+                                <option key={item.id} value={index}>
+                                    {item.nomeFantasia}                                 
+                                </option>                                                             
+                                )                                
+                            })}         
+                                              
+                        </select>
+                        
+                        )}
+                        {/* Para exibir o CNPJ fora do select */}
+                      {customerSelected !== 0 && <p><strong>CNPJ: </strong>{customers[customerSelected].cnpj}</p>}
+                     
+
+                        
+
+                        <label>Assunto</label>
+                        <select value={assunto} onChange={handleChancheSelect}>
+                            <option value="Suporte">Suporte</option>
+                            <option value="Visita técnica">Visita técnica</option>
+                            <option value="Financeiro">Financeiro</option>
+                        </select>
+
+                        <label>Status do chamado</label>
+                        <div className='status'>
+                            <input type='radio' name='radio' value="Aberto"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Aberto'} 
+                            /> <span>Aberto</span>  {/*    checked={status === 'Aberto'}  Compara qual está marcado inicialmente */}
+
+                            <input type='radio' name='radio' value="Progresso"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Progresso'}
+                            /> <span>Progresso</span>
+
+                            <input type='radio' name='radio' value="Atendido"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Atendido'}
+                            /> <span>Atendido</span>
+                        </div>
+
+                        <label>Solicitação</label>
+                        <textarea type="text"  placeholder='Descreva...' 
+                        value={complemento}
+                        onChange={(e)=> setComplemento(e.target.value)}
+                        />
+
+                        <button type='submit'>Registrar</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+
+
+---------------------BUSCAR CHAMADOS. useEffect faz isso.
+Em Dashboard/index.js:
+
+
+
+import './dashboard.css';
+// Importar useContext e AuthContext para poder deslogar
+//useEffect para fazer BUSCAS por chamados no DB
+import { useState, useEffect } from "react";
+import firebase from '../../services/firebaseConnection';
+
+
+import  Header  from "../../components/Header";
+import Title from '../../components/Title';
+import { FiMessageSquare, FiPlus, FiSearch, FiEdit2} from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+//Para formatar data instalar. Veja a documentação em https://date-fns.org/
+  import {format} from 'date-fns';                  
+
+//useEffect para fazer BUSCAS por chamados no DB
+const listRef = firebase.firestore().collection('chamados').orderBy('created', 'desc');
+
+
+
+export default function Dashboard(){
+
+    //Para simular um chamado durante o desenvolvimento coloque 1, 
+    //mas para o uso normal, deixar em branco, inicia vazia.
+    const [chamados, setChamados]=useState([1]);// Será em um array pois terá uma lista.
+
+//useEffect para fazer BUSCAS por chamados no DB
+    const [loading, setLoading]=useState(true);//Carregando chamado
+    //buscar mais
+    const [loadingMore, setLoadingMore]=useState(false);
+    //para saber se a lista está vazia
+    const [isEmpty, setIsEmpty]=useState(false);
+    //Pega o último documento buscado
+    const [lastDocs, setLastDocs]=useState();
+    
+
+    useEffect(()=>{
+        loadChamados();
+        return()=>{}
+    },[]);
+
+    //Criando aqui fora o loadChamados poderá ser chamada em qualquer lugar a aplicação
+    async function loadChamados(){
+        await listRef.limit(5)
+        .get()
+        .then((snapshot)=>{
+            updateState(snapshot)
+        })
+        .catch((err)=>{
+            console.log('Erro ao buscar', err);
+            toast.error("Algo saiu errado.")
+            setLoadingMore(false);
+        })
+        setLoading(false);
+    }
+
+   async function updateState(snapshot){
+        const isCollectionEmpty =snapshot.size===0;
+        //se for diferente de vazia
+        if(!isCollectionEmpty){
+            let lista=[];
+            snapshot.forEach((doc)=>{
+                lista.push({ //Veja a lista criada no DB
+                    id: doc.id,
+                    assunto: doc.data().assunto,
+                    cliente: doc.data().cliente,
+                    clienteId: doc.data().clienteId,
+                    created: doc.data().created,
+                    //Para formatar data instalar date-fns no terminal. Veja a documentação em https://date-fns.org/
+                    //npm install date-fns    import {format} from 'date-fns';  
+                    createdFormat: format(doc.data().created.toDate(),'dd/MM/yyyy'),
+                    status: doc.data().status,
+                    complemento: doc.data().complemento
+
+                })
+            })
+            const lastDoc = snapshot.docs[snapshot.docs.length -1]; //Pega o último documento buscado
+            
+            setChamados(chamados=>[...chamados, ...lista]);
+            setLastDocs(lastDoc);
+        }else{
+            setIsEmpty(true);
+        }
+        setLoadingMore(false);
+   }
+
+
+
+
+
+    return(
+        <div>
+            <Header/>
+
+            <div className='content'>  
+                <Title name='Atendimentos'>
+                    <FiMessageSquare size={25}/>                    
+                </Title>
+
+
+{/*Se for igual a zero quer dizer que não há chamados */}
+                { chamados.length===0 ? (  
+                    <div className='container dashboard'>
+                        <span>Verificando... Nenhum chamado registrado.</span>
+
+                        <Link  to='/new' className='new' >
+                            <FiPlus color='fff' size={25} />
+                            Novo chamado
+                        </Link>
+                    </div>
+
+                ) : (
+                    
+                   <>   {/*Pode usar um "Fragment" aqui para não alterar formatação */}
+
+                        <Link  to='/new' className='new' >
+                            <FiPlus color='fff' size={25} />
+                            Novo chamado
+                        </Link> 
+
+
+                        {/*Tabelas dos chamados */}
+                        <table>
+                            <thead>{/*Cabeçalho */}
+                                <tr>
+                                    <th scope='col'>Cliente</th>
+                                    <th scope='col'>Assunto</th>
+                                    <th scope='col'>Status</th>
+                                    <th scope='col'>Cadastrado em</th>
+                                    <th scope='col'>#</th>                                    
+                                </tr>                                
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td data-label='Cliente'>cliente escola</td>
+                                    <td data-label='Assunto'>assunto</td>
+                                    <td data-label='Status'>
+                                        <span className='badge' style={{backgroundColor: '#5cb85c'}} >Aberto</span>
+                                    </td>
+                                    <td data-label='Cadastrado'>20/02/2022</td>
+                                    <td data-label='#'>
+                                        <button className='action' style={{backgroundColor:'#3583f6'  }}>
+                                            <FiSearch color='#fff' size={17} />
+                                        </button>
+                                        <button className='action' style={{backgroundColor:'#f6a935'  }}>
+                                            <FiEdit2 color='#fff' size={17} />
+                                        </button>
+                                        
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>          
+                   
+                   </>
+                )} 
+
+                
+            </div>           
+        </div>
+    )
+}
+
+
+
+----------Passar os itens buscados para Dashboard.
+Fazer uma renderização condicional:
+
+
+import './new.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+import { FiPlusCircle } from 'react-icons/fi';
+
+import firebase from '../../services/firebaseConnection';
+
+//Funcionalidades, parte do cliente
+import { useState, useEffect, useContext } from 'react';// useContext - vai precisar do id do user por isso importar
+import { AuthContext } from '../../contexts/auth';
+import { toast } from 'react-toastify';
+
+export default function New(){
+
+    const [assunto, setAssunto]=useState('Suporte');
+    const [status, setStatus]=useState('Aberto');
+    const [complemento, setComplemento]=useState('');
+
+    //Funcionalidades, parte do cliente
+    const {user} =useContext(AuthContext);
+    const [customers, setCustomers]=useState([]);
+    const [loadCustomers, setLoadCustomers]=useState(true);//Para exibir ao usuário que está buscando info no BD
+    const [customerSelected, setCustomerSelected ]=useState(0);//Pegar o ID selecionado do cliente pois será tudo dinâmico
+    useEffect(()=>{
+        async function loadCustomers(){ // vai chamar "customers" no BD, verificar o nome correto que foi criado.
+            await firebase.firestore().collection('customers')
+            .get()
+            .then((snapshot)=>{
+                let lista = [];
+
+                snapshot.forEach((doc)=>{
+                    lista.push({
+                        id: doc.id,
+                        nomeFantasia: doc.data().nomeFantasia,
+                        cnpj: doc.data().cnpj,
+                    })
+                })
+                //Fazer a verificação
+                if(lista.length === 0){
+                    console.log('Nenhuma empresa encontrada');
+                    setCustomers([{ id:'1', nomeFantasia:'Nenhuma empresa encontrada'}]);//Caso erro, não pode ficar vazio, nesse caso vai ficar em "branco"
+                    setLoadCustomers(false);//Volta para false
+                    toast.error('Nenhuma empresa encontrada');
+                    return;
+                }//Se encontrou, passar a lista
+                setCustomers(lista);
+                setLoadCustomers(false);//Volta para false
+
+                //Passar tuddo isso para o formulário em <select>
+            })
+            .catch((error=>{
+                console.log(error);
+                setLoadCustomers(false);//Volta para false
+                setCustomers([{ id:'1', nomeFantasia:''}]);//Caso erro, não pode ficar vazio, nesse caso vai ficar em "branco"
+                toast.error('Erro! Algo inesperado ocorreu.')
+            }))
+        }
+
+        loadCustomers();
+    },[]);
+
+
+
+
+    async function handleRegister(e){
+        e.preventDefault();
+        //alert('teste botão registrar')
+
+        await firebase.firestore().collection('chamados')
+        .add({
+            created: new Date(),
+            cliente: customers[customerSelected].nomeFantasia,
+            clienteId: customers[customerSelected].id,
+            assunto: assunto,
+            status: status,
+            complemento: complemento,
+            userId: user.uid,
+        })/*Aula 117*/
+        .then(()=>{
+            toast.success('Registrado com sucesso.');
+            setComplemento('');
+            setCustomerSelected(0);
+
+        })
+        .catch((err)=>{
+            console.log(err);
+            toast.error('Erro! Erro ao registrar.')
+        })
+    }
+    
+    //Trocar assunto
+    function handleChancheSelect(e){
+        setAssunto(e.target.value);
+        //console.log(e.target.value);
+    }
+
+
+    //Trocar status
+    function handleOptionChanche(e){
+       setStatus(e.target.value); 
+       //console.log(e.target.value);
+    }
+
+
+//Trocar cliente na opção do chamado
+async function handleChancheCustomers(e){
+   // console.log('INDEX do cliente selecionado: ', e.target.value );
+   // console.log('Cliente selecionado: ', customers[e.target.value])
+    setCustomerSelected(e.target.value);    
+}
+
+    return(
+        <div>
+            <Header/>
+            
+            <div className='content'>
+                <Title name="Novo Chamado">
+                    <FiPlusCircle size={25}/>
+                </Title>
+
+                <div className='container'>
+                    <form className='form-profile'   onSubmit={handleRegister} >
+                        
+                        <label>Cliente </label>
+                        {loadCustomers ? (
+                            <input type='text' disabled={true} value="Carregando clientes..." />
+                        ):(
+
+
+                        <select value={customerSelected} onChange={handleChancheCustomers}>
+                            {customers.map((item, index)=>{
+                                return(                                    
+                                <option key={item.id} value={index}>
+                                    {item.nomeFantasia}                                 
+                                </option>                                                             
+                                )                                
+                            })}         
+                                              
+                        </select>
+                        
+                        )}
+                        {/* Para exibir o CNPJ fora do select */}
+                      {customerSelected !== 0 && <p><strong>CNPJ: </strong>{customers[customerSelected].cnpj}</p>}
+                     
+
+                        
+
+                        <label>Assunto</label>
+                        <select value={assunto} onChange={handleChancheSelect}>
+                            <option value="Suporte">Suporte</option>
+                            <option value="Visita técnica">Visita técnica</option>
+                            <option value="Financeiro">Financeiro</option>
+                        </select>
+
+                        <label>Status do chamado</label>
+                        <div className='status'>
+                            <input type='radio' name='radio' value="Aberto"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Aberto'} 
+                            /> <span>Aberto</span>  {/*    checked={status === 'Aberto'}  Compara qual está marcado inicialmente */}
+
+                            <input type='radio' name='radio' value="Progresso"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Progresso'}
+                            /> <span>Progresso</span>
+
+                            <input type='radio' name='radio' value="Atendido"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Atendido'}
+                            /> <span>Atendido</span>
+                        </div>
+
+                        <label>Solicitação</label>
+                        <textarea type="text"  placeholder='Descreva...' 
+                        value={complemento}
+                        onChange={(e)=> setComplemento(e.target.value)}
+                        />
+
+                        <button type='submit'>Registrar</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+
+--------------------dashboard botões buscar e editar: 
+
+
+import './dashboard.css';
+// Importar useContext e AuthContext para poder deslogar
+//useEffect para fazer BUSCAS por chamados no DB
+import { useState, useEffect } from "react";
+import firebase from '../../services/firebaseConnection';
+
+
+import  Header  from "../../components/Header";
+import Title from '../../components/Title';
+import { FiMessageSquare, FiPlus, FiSearch, FiEdit2} from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+//Para formatar data instalar. Veja a documentação em https://date-fns.org/
+  import {format} from 'date-fns';                  
+
+//useEffect para fazer BUSCAS por chamados no DB
+const listRef = firebase.firestore().collection('chamados').orderBy('created', 'desc');
+
+
+
+export default function Dashboard(){
+
+    //Para simular um chamado durante o desenvolvimento coloque 1, 
+    //mas para o uso normal, deixar em branco, inicia vazia.
+    const [chamados, setChamados]=useState([]);// Será em um array pois terá uma lista.
+
+//useEffect para fazer BUSCAS por chamados no DB
+    const [loading, setLoading]=useState(true);//Carregando chamado
+    //buscar mais
+    const [loadingMore, setLoadingMore]=useState(false);
+    //para saber se a lista está vazia
+    const [isEmpty, setIsEmpty]=useState(false);
+    //Pega o último documento buscado
+    const [lastDocs, setLastDocs]=useState();
+
+     //botões buscar e editar. //Buscar
+    const [showPostModal, setShowPostModal]=useState(false);
+    const [detail, setDetail] = useState();//Detalhes do conteúdo
+
+
+    useEffect(()=> {
+
+//A função loadChamados() pode ser passada aqui para tirar aviso no console do navegador, mas não tem problema deixar assim.
+
+        loadChamados();    
+        return () => {    
+        }
+      }, []);
+
+    //Criando aqui fora o loadChamados poderá ser chamada em qualquer lugar a aplicação, mas pode ser passada dentro de useEffect
+    async function loadChamados(){
+        await listRef.limit(5)
+        .get()
+        .then((snapshot)=>{
+            updateState(snapshot)
+        })
+        .catch((err)=>{
+            console.log('Erro ao buscar', err);
+            toast.error("Algo saiu errado.")
+            setLoadingMore(false);
+        })
+        setLoading(false);
+    }
+
+   async function updateState(snapshot){
+        const isCollectionEmpty = snapshot.size===0;
+        //se for diferente de vazia
+        if(!isCollectionEmpty){
+            let lista=[];
+
+            snapshot.forEach((doc)=>{
+                lista.push({ //Veja a lista criada no DB
+                    id: doc.id,
+                    assunto: doc.data().assunto,
+                    cliente: doc.data().cliente,
+                    clienteId: doc.data().clienteId,
+                    created: doc.data().created,
+                    //Para formatar data instalar date-fns no terminal. Veja a documentação em https://date-fns.org/
+                    //npm install date-fns    import {format} from 'date-fns';  
+                    createdFormated: format(doc.data().created.toDate(), 'dd/MM/yyyy'),
+                    status: doc.data().status,
+                    complemento: doc.data().complemento
+                    
+
+                })
+            })
+            const lastDoc = snapshot.docs[snapshot.docs.length -1]; //Pega o último documento buscado
+            
+            setChamados(chamados=>[...chamados, ...lista]);
+            setLastDocs(lastDoc);
+        }else{
+            setIsEmpty(true);
+        }
+        setLoadingMore(false);
+   }
+
+
+   //botão de busca
+   async function handleMore(){
+    setLoadingMore(true);
+    await listRef.startAfter(lastDocs).limit(5)
+    .get()
+    .then((snapshot)=>{
+      updateState(snapshot);
+    })
+  }
+
+
+
+
+ //  Passar os itens buscados para Dashboard
+ if(loading){
+    return(
+        <div>
+            <Header/>
+
+            <div className='content'>  
+                <Title name='Atendimentos'>
+                    <FiMessageSquare size={25}/>                    
+                </Title>
+            </div>
+
+            <div className='container dashboard'>
+                <span>Buscando chamados...</span>
+            </div>
+        </div>
+    )
+ }
+
+
+
+ //botões buscar e editar.
+ //Buscar.  A ideia toogle é que sempre que tiver aberto, fecha e vice versa.
+ async function tooglePostModal(item){
+    //console.log(item);
+    setShowPostModal(!showPostModal); //Vai inverter true/false
+    setDetail(item);
+ }
+
+ 
+ 
+    return(
+        <div>
+            <Header/>
+
+            <div className='content'>  
+                <Title name='Atendimentos'>
+                    <FiMessageSquare size={25}/>                    
+                </Title>
+
+
+{/*Se for igual a zero quer dizer que não há chamados */}
+                { chamados.length===0 ? (  
+                    <div className='container dashboard'>
+                        <span>Verificando... Nenhum chamado registrado.</span>
+
+                        <Link  to='/new' className='new' >
+                            <FiPlus color='fff' size={25} />
+                            Novo chamado
+                        </Link>
+                    </div>
+
+                ) : (
+                    
+                   <>   {/*Pode usar um "Fragment" aqui para não alterar formatação */}
+
+                        <Link  to='/new' className='new' >
+                            <FiPlus color='fff' size={25} />
+                            Novo chamado
+                        </Link> 
+
+
+                        {/*Tabelas dos chamados */}
+                        <table>
+                            <thead>{/*Cabeçalho */}
+                                <tr>
+                                    <th scope='col'>Cliente</th>
+                                    <th scope='col'>Assunto</th>
+                                    <th scope='col'>Status</th>
+                                    <th scope='col'>Cadastrado em</th>
+                                    <th scope='col'>#</th>                                    
+                                </tr>                                
+                            </thead>
+
+                            <tbody>
+                                {/* Passar os itens buscados para Dashboard
+                                Essa parte toda tem que ser dinâmica, passar tr todo para dentro de .map() */}
+
+                                {chamados.map((item, index)=>{
+                                    return( //Agora é só distribuir todos os dados da lista aqui
+
+
+                                        <tr key={index}>
+                                            <td data-label='Cliente'>{item.cliente}</td>
+                                            <td data-label='Assunto'>{item.assunto}</td>
+                                            <td data-label='Status'>
+                                            <span className='badge' style={{ 
+                                               backgroundColor: item.status==='Aberto' ? '#ff0000' : 
+                                                                item.status==='Progresso' ? '#5cb85c' : 
+                                                                item.status==='Atendido' ? '#999' : ''
+                                            }} >{item.status}</span>
+
+                                            </td>
+                                            <td data-label='Cadastrado'>{item.createdFormated}</td>
+
+                                            <td data-label='#'>
+                                            <button className='action' style={{backgroundColor:'#3583f6'  }} 
+                                            onClick={()=> tooglePostModal(item)}>
+                                                <FiSearch color='#fff' size={17} />
+                                            </button>
+                                            <button className='action' style={{backgroundColor:'#f6a935'  }}>
+                                                <FiEdit2 color='#fff' size={17} />
+                                            </button>
+                                            
+                                            </td>
+                                        </tr>
+
+                                    )
+                                })}
+                                
+                            </tbody>
+                        </table>   
+
+                         {loadingMore && <h3 style={{textAlign: 'center', marginTop: 15 }}>Buscando dados...</h3>}
+            { !loadingMore && !isEmpty && <button className="btn-more" onClick={handleMore}>Buscar mais</button> }
+       
+                   
+                   </>
+                )} 
+
+                
+            </div>           
+        </div>
+    )
+}
+
+
+----------Nesse momento pode ser criado um componente para ser compartilhado:
+
+src/components/Modal.indexjs:
+
+
+export default function Modal(){
+    return(
+        <div>
+            teste Modal
+        </div>
+    )
+}
+
+
+-=-----------------Continuação. Importar modal na dashboard
+--------------------dashboard botões buscar e editar: 
+
+
+import './dashboard.css';
+// Importar useContext e AuthContext para poder deslogar
+//useEffect para fazer BUSCAS por chamados no DB
+import { useState, useEffect } from "react";
+import firebase from '../../services/firebaseConnection';
+
+
+import  Header  from "../../components/Header";
+import Title from '../../components/Title';
+import { FiMessageSquare, FiPlus, FiSearch, FiEdit2} from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+//Para formatar data instalar. Veja a documentação em https://date-fns.org/
+  import {format} from 'date-fns';  
+  
+  //botões buscar e editar. Importar Modal
+  import Modal from '../../components/Modal';
+
+
+
+//useEffect para fazer BUSCAS por chamados no DB
+const listRef = firebase.firestore().collection('chamados').orderBy('created', 'desc');
+
+
+
+export default function Dashboard(){
+
+    //Para simular um chamado durante o desenvolvimento coloque 1, 
+    //mas para o uso normal, deixar em branco, inicia vazia.
+    const [chamados, setChamados]=useState([]);// Será em um array pois terá uma lista.
+
+//useEffect para fazer BUSCAS por chamados no DB
+    const [loading, setLoading]=useState(true);//Carregando chamado
+    //buscar mais
+    const [loadingMore, setLoadingMore]=useState(false);
+    //para saber se a lista está vazia
+    const [isEmpty, setIsEmpty]=useState(false);
+    //Pega o último documento buscado
+    const [lastDocs, setLastDocs]=useState();
+
+     //botões buscar e editar. //Buscar
+    const [showPostModal, setShowPostModal]=useState(false);
+    const [detail, setDetail] = useState();//Detalhes do conteúdo
+
+
+    useEffect(()=> {
+
+//A função loadChamados() pode ser passada aqui para tirar aviso no console do navegador, mas não tem problema deixar assim.
+
+        loadChamados();    
+        return () => {    
+        }
+      }, []);
+
+    //Criando aqui fora o loadChamados poderá ser chamada em qualquer lugar a aplicação, mas pode ser passada dentro de useEffect
+    async function loadChamados(){
+        await listRef.limit(5)
+        .get()
+        .then((snapshot)=>{
+            updateState(snapshot)
+        })
+        .catch((err)=>{
+            console.log('Erro ao buscar', err);
+            toast.error("Algo saiu errado.")
+            setLoadingMore(false);
+        })
+        setLoading(false);
+    }
+
+   async function updateState(snapshot){
+        const isCollectionEmpty = snapshot.size===0;
+        //se for diferente de vazia
+        if(!isCollectionEmpty){
+            let lista=[];
+
+            snapshot.forEach((doc)=>{
+                lista.push({ //Veja a lista criada no DB
+                    id: doc.id,
+                    assunto: doc.data().assunto,
+                    cliente: doc.data().cliente,
+                    clienteId: doc.data().clienteId,
+                    created: doc.data().created,
+                    //Para formatar data instalar date-fns no terminal. Veja a documentação em https://date-fns.org/
+                    //npm install date-fns    import {format} from 'date-fns';  
+                    createdFormated: format(doc.data().created.toDate(), 'dd/MM/yyyy'),
+                    status: doc.data().status,
+                    complemento: doc.data().complemento
+                    
+
+                })
+            })
+            const lastDoc = snapshot.docs[snapshot.docs.length -1]; //Pega o último documento buscado
+            
+            setChamados(chamados=>[...chamados, ...lista]);
+            setLastDocs(lastDoc);
+        }else{
+            setIsEmpty(true);
+        }
+        setLoadingMore(false);
+   }
+
+
+   //botão de busca
+   async function handleMore(){
+    setLoadingMore(true);
+    await listRef.startAfter(lastDocs).limit(5)
+    .get()
+    .then((snapshot)=>{
+      updateState(snapshot);
+    })
+  }
+
+
+
+
+ //  Passar os itens buscados para Dashboard
+ if(loading){
+    return(
+        <div>
+            <Header/>
+
+            <div className='content'>  
+                <Title name='Atendimentos'>
+                    <FiMessageSquare size={25}/>                    
+                </Title>
+            </div>
+
+            <div className='container dashboard'>
+                <span>Buscando chamados...</span>
+            </div>
+        </div>
+    )
+ }
+
+
+
+ //botões buscar e editar.
+ //Buscar.  A ideia toogle é que sempre que tiver aberto, fecha e vice versa.
+ async function tooglePostModal(item){
+    //console.log(item);
+    setShowPostModal(!showPostModal); //Vai inverter true/false
+    setDetail(item);
+ }
+
+
+ 
+    return(
+        <div>
+            <Header/>
+
+            <div className='content'>  
+                <Title name='Atendimentos'>
+                    <FiMessageSquare size={25}/>                    
+                </Title>
+
+
+{/*Se for igual a zero quer dizer que não há chamados */}
+                { chamados.length===0 ? (  
+                    <div className='container dashboard'>
+                        <span>Verificando... Nenhum chamado registrado.</span>
+
+                        <Link  to='/new' className='new' >
+                            <FiPlus color='fff' size={25} />
+                            Novo chamado
+                        </Link>
+                    </div>
+
+                ) : (
+                    
+                   <>   {/*Pode usar um "Fragment" aqui para não alterar formatação */}
+
+                        <Link  to='/new' className='new' >
+                            <FiPlus color='fff' size={25} />
+                            Novo chamado
+                        </Link> 
+
+
+                        {/*Tabelas dos chamados */}
+                        <table>
+                            <thead>{/*Cabeçalho */}
+                                <tr>
+                                    <th scope='col'>Cliente</th>
+                                    <th scope='col'>Assunto</th>
+                                    <th scope='col'>Status</th>
+                                    <th scope='col'>Cadastrado em</th>
+                                    <th scope='col'>#</th>                                    
+                                </tr>                                
+                            </thead>
+
+                            <tbody>
+                                {/* Passar os itens buscados para Dashboard
+                                Essa parte toda tem que ser dinâmica, passar tr todo para dentro de .map() */}
+
+                                {chamados.map((item, index)=>{
+                                    return( //Agora é só distribuir todos os dados da lista aqui
+
+
+                                        <tr key={index}>
+                                            <td data-label='Cliente'>{item.cliente}</td>
+                                            <td data-label='Assunto'>{item.assunto}</td>
+                                            <td data-label='Status'>
+                                            <span className='badge' style={{ 
+                                               backgroundColor: item.status==='Aberto' ? '#ff0000' : 
+                                                                item.status==='Progresso' ? '#5cb85c' : 
+                                                                item.status==='Finalizado' ? '#999' : ''
+                                            }} >{item.status}</span>
+
+                                            </td>
+                                            <td data-label='Cadastrado'>{item.createdFormated}</td>
+
+                                            <td data-label='#'>
+                                            <button className='action' style={{backgroundColor:'#3583f6'  }} 
+                                            onClick={()=> tooglePostModal(item)}>
+                                                <FiSearch color='#fff' size={17} />
+                                            </button>
+                                            <button className='action' style={{backgroundColor:'#f6a935'  }}>
+                                                <FiEdit2 color='#fff' size={17} />
+                                            </button>
+                                            
+                                            </td>
+                                        </tr>
+
+                                    )
+                                })}
+                                
+                            </tbody>
+                        </table>   
+
+                         {loadingMore && <h3 style={{textAlign: 'center', marginTop: 15 }}>Buscando dados...</h3>}
+            { !loadingMore && !isEmpty && <button className="btn-more" onClick={handleMore}>Buscar mais</button> }
+       
+                   
+                   </>
+                )} 
+
+                
+            </div>     
+
+            {/*//botões buscar e editar. Importar Modal*/}
+            {showPostModal && (
+                <Modal
+                    conteudo={detail} close={tooglePostModal}
+                />
+            )}
+
+
+        </div>
+    )
+}
+
+
+
+-------------Atualizando src/components/Modal.indexjs:
+
+
+
+import './modal.css';
+import { FiX } from 'react-icons/fi';
+
+
+export default function Modal({conteudo, close}){
+    return(
+        <div className='modal'>
+            <div className='container'>
+                <button className='close' onClick={ close }>
+                    <FiX size={23} color='#fff'/>
+                </button>
+
+                <div>
+                    <h2>Detalhes do chamado:</h2>
+                    <div className='row'>
+                        <span>
+                            <strong>Cliente:</strong> <i>{conteudo.cliente}</i>
+                        </span>
+                    </div>
+
+
+                    <div className='row'>
+                        <span>
+                        <strong>Assunto:</strong> <i>{conteudo.assunto}</i>
+                        </span>
+                        <span>
+                        <strong>Cadastrado em:</strong><i>{conteudo.createdFormated}</i>
+                        </span>
+                    </div>
+
+
+                    <div className='row'>
+                        <span>
+                        <strong> Status:</strong> <i style={{color:'#fff', backgroundColor: conteudo.status==='Aberto' ? '#ff0000' : 
+                                                                conteudo.status==='Progresso' ? '#5cb85c' : 
+                                                                conteudo.status==='Finalizado' ? '#999' : ''
+                                    }}>{conteudo.status}</i>
+                        </span>
+                    </div>
+
+                    {/*Neste projeto o complemento ficou como opcional, mas no projeto real deve ser obrigatório */}
+                    {conteudo.complemento !== '' && (
+                        <>
+                        <h3>Complemento</h3>
+                        <p>{conteudo.complemento}</p>
+                        </>
+                    )}
+
+
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+
+
+-------------Atualizando src/components/Modal.modal.css:
+.modal{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    background: rgba(0,0,0,  0.7) ;
+    z-index: 99;
+}
+
+.modal .container{
+    position: fixed;
+    max-width: 600px;
+    top:15%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    padding: 5em 2em;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,  0.9);
+}
+
+.close{
+    background-color: #f65835;
+    border: 0;
+    color: #fff;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 5px;
+    border-radius: 5px;
+}
+
+.modal h2{
+    margin-bottom: 1.2em;
+    font-size: 1.8em;
+    color: #121212;
+}
+
+.modal h3{
+    font-size: 1.5em;
+}
+
+.modal span i {
+    font-weight: 400;
+    margin-right: 1em;
+    padding: 2px 8px;
+    border-radius: 5px;
+}
+
+.row{
+    margin-bottom: 1em;
+}
+
+.modal p{
+    padding-top: 0.5em;
+    white-space: pre-wrap; /* Vai dar espaço entre um paragrafo e outro*/
+}
+
+
+
+
+---------------Botão editar, criar rota para o id.
+Em routes/index.js:
+
+
+// Switch - um componente por página
+import { Switch } from 'react-router-dom';
+import Route from './Route';
+
+import SignIn from '../pages/SignIn';
+import SignUp from '../pages/SignUp';
+import Dashboard from '../pages/Dashboard';
+import Profile from '../pages/Profile';
+import Customers from '../pages/Customers';
+
+import New from '../pages/New';
+
+export default function Routes(){
+    return(
+        <Switch>
+            <Route exact path='/' component={SignIn} />
+            <Route exact path='/register' component={SignUp} />
+            
+            <Route exact path='/dashboard' component={Dashboard}  isPrivate  />
+            <Route exact path='/profile' component={Profile} isPrivate />
+            <Route exact path='/customers' component={ Customers } isPrivate />
+            <Route exact path='/new' component={ New } isPrivate />
+
+            <Route exact path='/new/:id' component={ New } isPrivate />
+
+        </Switch>
+    )
+}
+
+
+
+---------------Em new/index.js botão editar:
+
+
+import './new.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+import { FiPlusCircle } from 'react-icons/fi';
+
+import firebase from '../../services/firebaseConnection';
+
+//Funcionalidades, parte do cliente
+import { useState, useEffect, useContext } from 'react';// useContext - vai precisar do id do user por isso importar
+import { AuthContext } from '../../contexts/auth';
+import { toast } from 'react-toastify';
+
+//Botão editar.  Importar rota para pegar o ID
+import {useHistory, useParams} from 'react-router-dom';
+
+export default function New(){
+    //Botão editar.
+    const { id }=useParams();
+    const history = useHistory();
+
+
+...
+
+
+
+
+----------------------Dashboard/index.js:
+Alterar o button de editar por Link do import { Link } from 'react-router-dom';
+e acrescetar to={`/new/${item.id}`}
+
+
+Nessa parte:
+
+
+</td>
+<td data-label='Cadastrado'>{item.createdFormated}</td>
+<td data-label='#'>
+ <button className='action' style={{backgroundColor:'#3583f6'  }} 
+  onClick={()=> tooglePostModal(item)}>
+<FiSearch color='#fff' size={17} />
+   </button>
+  <Link className='action' style={{backgroundColor:'#f6a935'  }} to={`/new/${item.id}`}>
+  <FiEdit2 color='#fff' size={17} />
+</Link >
+</td>
+
+
+
+
+-----------------------------Atualizar New/index.js para verificar se quer editar ou não,
+veja em  async function loadCustomers(){
+
+
+
+
+
+ 
+import './new.css';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
+import { FiPlusCircle } from 'react-icons/fi';
+
+import firebase from '../../services/firebaseConnection';
+
+//Funcionalidades, parte do cliente
+import { useState, useEffect, useContext } from 'react';// useContext - vai precisar do id do user por isso importar
+import { AuthContext } from '../../contexts/auth';
+import { toast } from 'react-toastify';
+
+//Botão editar.  Importar rota para pegar o ID
+import {useHistory, useParams} from 'react-router-dom';
+
+export default function New(){
+    //Botão editar.
+    const { id }=useParams();
+    const history = useHistory();
+    const [idCustomer, setIdCustomer]=useState(false);
+
+    const [assunto, setAssunto]=useState('Suporte');
+    const [status, setStatus]=useState('Aberto');
+    const [complemento, setComplemento]=useState('');
+
+    //Funcionalidades, parte do cliente
+    const {user} =useContext(AuthContext);
+    const [customers, setCustomers]=useState([]);
+    const [loadCustomers, setLoadCustomers]=useState(true);//Para exibir ao usuário que está buscando info no BD
+    const [customerSelected, setCustomerSelected ]=useState(0);//Pegar o ID selecionado do cliente pois será tudo dinâmico
+    useEffect(()=>{
+        async function loadCustomers(){ // vai chamar "customers" no BD, verificar o nome correto que foi criado.
+            await firebase.firestore().collection('customers')
+            .get()
+            .then((snapshot)=>{
+                let lista = [];
+
+                snapshot.forEach((doc)=>{
+                    lista.push({
+                        id: doc.id,
+                        nomeFantasia: doc.data().nomeFantasia,
+                        cnpj: doc.data().cnpj,
+                    })
+                })
+                //Fazer a verificação
+                if(lista.length === 0){
+                    console.log('Nenhuma empresa encontrada');
+                    setCustomers([{ id:'1', nomeFantasia:'Nenhuma empresa encontrada'}]);//Caso erro, não pode ficar vazio, nesse caso vai ficar em "branco"
+                    setLoadCustomers(false);//Volta para false
+                    toast.error('Nenhuma empresa encontrada');
+                    return;
+                }//Se encontrou, passar a lista
+                setCustomers(lista);
+                setLoadCustomers(false);//Volta para false
+
+//Botão editar, fazer verificação:
+                if(id){
+                    loadId(lista);
+                }
+
+
+
+                //Passar tuddo isso para o formulário em <select>
+            })
+            .catch((error=>{
+                console.log(error);
+                setLoadCustomers(false);//Volta para false
+                setCustomers([{ id:'1', nomeFantasia:''}]);//Caso erro, não pode ficar vazio, nesse caso vai ficar em "branco"
+                toast.error('Erro! Algo inesperado ocorreu.')
+            }))
+        }
+
+        loadCustomers();
+
+    },[id]);/*Botão editar, navegador solicitou isso, mas não precisa. 
+    Caso queira tirar as mensagens pode colocar todo o loadId para dentro do 
+    useEffect.
+    Agora precisa acertar o Botão registrar em handleRegister, fazer a verificação
+    para poder fazer o UPDATE */
+
+
+
+//Botão editar, fazer verificação no BD:
+    async function loadId(lista){
+        await firebase.firestore().collection('chamados').doc(id)
+        .get()
+        .then((snapshot)=>{//Se chegou até aqui é pq achou o id no DB
+            setAssunto(snapshot.data().assunto);
+            setStatus(snapshot.data().status);
+            setComplemento(snapshot.data().complemento);
+
+            //encontar index do cliente
+            let index = lista.findIndex(item=>item.id === snapshot.data().clienteId);
+            setCustomerSelected(index);
+            setIdCustomer(true);//Vai confirmar a rota com o id do DB
+
+        })//Foi devolvido do DB para a página new os dados selecionados em editar
+
+        .catch((err)=>{
+            console.log("Erro no ID passado.", err);
+            setIdCustomer(false);//Ta dizendo que o ID não existe
+        })
+    }
+
+
+
+    async function handleRegister(e){
+        e.preventDefault();
+        //alert('teste botão registrar')
+
+        //Botão editar. Se idCustomer tiver true é pq está tentando editar
+        if(idCustomer){
+            await firebase.firestore().collection('chamados')
+            .doc(id)
+            .update({
+                cliente: customers[customerSelected].nomeFantasia,
+                clienteId: customers[customerSelected].id,
+                assunto: assunto,
+                status: status,
+                complemento: complemento,
+                userId: user.uid,
+            })
+            .then(()=>{
+                toast.success('Editado com sucesso.');
+                setCustomerSelected(0);
+                setComplemento('');
+                history.push('/dashboard');//Após atualizar vai enviar para pg dashboard
+            })
+            .catch((err)=>{
+                toast.error('Erro ao editar. Tente novamente mais tarde.');
+                console.log('Erro ao editar:', err);
+            })
+            return; //Para sair aqui e não ir para baixo e cadastrar
+        }
+
+        await firebase.firestore().collection('chamados')
+        .add({
+            created: new Date(),
+            cliente: customers[customerSelected].nomeFantasia,
+            clienteId: customers[customerSelected].id,
+            assunto: assunto,
+            status: status,
+            complemento: complemento,
+            userId: user.uid,
+        })/*Aula 117*/
+        .then(()=>{
+            toast.success('Registrado com sucesso.');
+            setComplemento('');
+            setCustomerSelected(0);
+
+        })
+        .catch((err)=>{
+            console.log(err);
+            toast.error('Erro! Erro ao registrar.')
+        })
+    }
+    
+    //Trocar assunto
+    function handleChancheSelect(e){
+        setAssunto(e.target.value);
+        //console.log(e.target.value);
+    }
+
+
+    //Trocar status
+    function handleOptionChanche(e){
+       setStatus(e.target.value); 
+       //console.log(e.target.value);
+    }
+
+
+//Trocar cliente na opção do chamado
+async function handleChancheCustomers(e){
+   // console.log('INDEX do cliente selecionado: ', e.target.value );
+   // console.log('Cliente selecionado: ', customers[e.target.value])
+    setCustomerSelected(e.target.value);    
+}
+
+    return(
+        <div>
+            <Header/>
+            
+            <div className='content'>
+                <Title name="Novo Chamado">
+                    <FiPlusCircle size={25}/>
+                </Title>
+
+                <div className='container'>
+                    <form className='form-profile'   onSubmit={handleRegister} >
+                        
+                        <label>Cliente </label>
+                        {loadCustomers ? (
+                            <input type='text' disabled={true} value="Carregando clientes..." />
+                        ):(
+
+
+                        <select value={customerSelected} onChange={handleChancheCustomers}>
+                            {customers.map((item, index)=>{
+                                return(                                    
+                                <option key={item.id} value={index}>
+                                    {item.nomeFantasia}                                 
+                                </option>                                                             
+                                )                                
+                            })}         
+                                              
+                        </select>
+                        
+                        )}
+                        {/* Para exibir o CNPJ fora do select */}
+                      {customerSelected !== 0 && <p><strong>CNPJ: </strong>{customers[customerSelected].cnpj}</p>}
+                     
+
+                        
+
+                        <label>Assunto</label>
+                        <select value={assunto} onChange={handleChancheSelect}>
+                            <option value="Suporte">Suporte</option>
+                            <option value="Visita técnica">Visita técnica</option>
+                            <option value="Financeiro">Financeiro</option>
+                        </select>
+
+                        <label>Status do chamado</label>
+                        <div className='status'>
+                            <input type='radio' name='radio' value="Aberto"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Aberto'} 
+                            /> <span>Aberto</span>  {/*    checked={status === 'Aberto'}  Compara qual está marcado inicialmente */}
+
+                            <input type='radio' name='radio' value="Progresso"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Progresso'}
+                            /> <span>Progresso</span>
+
+                            <input type='radio' name='radio' value="Finalizado"
+                            onChange={handleOptionChanche}
+                            checked={status === 'Finalizado'}
+                            /> <span>Finalizado</span>
+                        </div>
+
+                        <label>Solicitação</label>
+                        <textarea type="text"  placeholder='Descreva...' 
+                        value={complemento}
+                        onChange={(e)=> setComplemento(e.target.value)}
+                        />
+
+                        <button type='submit'>Registrar</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+-----Finalizou aqaui, mas está exibindo duplicado.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
